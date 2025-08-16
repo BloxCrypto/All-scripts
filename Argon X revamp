@@ -1,0 +1,550 @@
+local LibraryNotify = loadstring(game:HttpGet("https://gist.githubusercontent.com/AgentX771/930b5a9b78517ebfed75475fb3f6c9f6/raw/f20d3cc01b72d0ee6581e89b0e2bd3eba069c40e/gistfile1.txt"))()
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/AgentX771/ArgonHubX/refs/heads/main/UIArgon/ArgonRise.lua'))()
+for _, v in next, {"Argon Hub X", "Argon", "Hub X", "Arg", "Argon_Hub_X"} do
+    pcall(delfolder, v)
+end
+local ESPLines = loadstring(game:HttpGet("https://raw.githubusercontent.com/AgentX771/ArgonHubX/refs/heads/main/Privating/ESPLines.lua"))()
+
+ESPLines.Enabled = true
+
+local Services = {
+	CoreGui = game:GetService("CoreGui"),
+	HttpService = game:GetService("HttpService"),
+	Players = game:GetService("Players"),
+	MarketplaceService = game:GetService("MarketplaceService"),
+	AnalyticsService = game:GetService("RbxAnalyticsService"),
+    Lighting = game:GetService("Lighting"),
+	RunService = game:GetService("RunService")
+}
+
+function GetMouse()
+    local UserInputService = game:GetService("UserInputService")
+    return UserInputService:GetMouseLocation()
+end
+
+function GetClosestPlayer()
+    local closestDistance = math.huge
+    local closestTarget = nil
+    for _, v in pairs(game:GetService("Workspace").Alive:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and v ~= game.Players.LocalPlayer.Character then
+            local humanoidRootPart = v.HumanoidRootPart
+            local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestTarget = v
+            end
+        end
+    end
+    return closestTarget
+end
+
+task.delay(10, function()
+	spawn(function()
+		while task.wait() do
+			if PlayerSaftey then
+				if not game.Players.LocalPlayer.Character or game.Players.LocalPlayer.Character.Parent.Name == "Dead" then return end
+				pcall(function()
+					local closestPlayer = GetClosestPlayer()
+					if closestPlayer and (closestPlayer.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= PlayerSaftey_Distance then
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = closestPlayer.HumanoidRootPart.CFrame * CFrame.new(-25, 0, -PlayerSaftey_Distance)
+					end
+				end)
+			end
+		end
+	end)
+end)
+
+function GetBall()
+    for _, v in pairs(game:GetService("Workspace").Balls:GetChildren()) do
+        if v:IsA("Part") then
+            return v
+        end
+    end
+    return nil
+end
+
+function GetBallFromPlayerPos(Ball)
+    return (Ball.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+end
+
+local function getSpeed(part)
+    if part:IsA("BasePart") then
+        local speed = part.Velocity.Magnitude
+        if speed > 1 then
+            return part, speed
+        end
+        return nil, nil
+    end
+    return nil, nil
+end
+
+local function measureVerticalDistance(humanoidRootPart, targetPart)
+    local humanoidRootPartY = humanoidRootPart.Position.Y
+    local targetPartY = targetPart.Position.Y
+    return math.abs(humanoidRootPartY - targetPartY)
+end
+
+function GetHotKey()
+    for _, v in pairs(game.Players.LocalPlayer.PlayerGui.Hotbar.Block.HotkeyFrame:GetChildren()) do
+        if v:IsA("TextLabel") then
+            return v.Text
+        end
+    end
+    return ""
+end
+
+local text = game.Players.LocalPlayer.PlayerGui.Hotbar.Block.HotkeyFrame:FindFirstChild("F")
+if text then
+    local KeyCodeBlock = text.Text
+    text:GetPropertyChangedSignal("Text"):Connect(function()
+        KeyCodeBlock = text.Text
+    end)
+end
+
+local CanSlash = false
+local BallSpeed = 0
+
+spawn(function()
+    while task.wait() do
+        if RandAutoaParry and RandAutoaParry[tostring(RandRNG)] then
+            pcall(function()
+                for _, v in pairs(game:GetService("Workspace").Balls:GetChildren()) do
+                    if v:IsA("Part") then
+                        if not game.Players.LocalPlayer.Character or not game.Players.LocalPlayer.Character:FindFirstChild("Highlight") then return end
+                        local part, speed = getSpeed(v)
+                        if part and speed then
+                            local minDistance = 2.5 * (speed * 0.1) + 2
+                            if minDistance == 0 or minDistance <= 20 then
+                                BallSpeed = 23
+                            elseif minDistance > 20 and minDistance <= 88 then
+                                BallSpeed = 2.5 * (speed * 0.1) + 5
+                            elseif minDistance > 88 and minDistance <= 110 then
+                                BallSpeed = 90
+                            end
+                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude <= BallSpeed then
+                                CanSlash = true
+                            else
+                                CanSlash = false
+                            end
+                        end
+                    end
+                end
+
+                if CanSlash then
+                    if math.random(1, 5) == 5 then
+                        game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, game, 1)
+                    else
+                        game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode[KeyCodeBlock], false, game)
+                    end
+                    CanSlash = false
+                end
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        if AutoWalk then
+            pcall(function()
+                local player = game.Players.LocalPlayer
+                local character = player.Character
+
+                if character and character.Parent and character.Parent.Name ~= "Dead" then
+                    local targetPosition
+                    for _, v in pairs(game:GetService("Workspace").Balls:GetChildren()) do
+                        if v:IsA("Part") then
+                            local part, speed = getSpeed(v)
+                            if part and speed and speed > 5 then
+                                targetPosition = part.Position + Vector3.new(AutoWalkDistanceX, 0, AutoWalkDistanceZ)
+                                break
+                            end
+                        end
+                    end
+
+                    if not targetPosition then
+                        for _, p in pairs(game:GetService("Workspace").Alive:GetChildren()) do
+                            if p ~= character and p:FindFirstChild("HumanoidRootPart") then
+                                targetPosition = p.HumanoidRootPart.Position + Vector3.new(AutoWalkDistanceX, 0, AutoWalkDistanceZ)
+                                break
+                            end
+                        end
+                    end
+
+                    if targetPosition then
+                        character:FindFirstChildOfClass("Humanoid"):MoveTo(targetPosition)
+                    end
+                end
+            end)
+        end
+
+        if AutoDoubleJump then
+            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                if humanoid:GetState() == Enum.HumanoidStateType.Freefall or humanoid:GetState() == Enum.HumanoidStateType.Jumping then
+                    task.wait(0.1)
+                else
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                    task.wait(0.3)
+                end
+            end
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        if ClosestPlayer_var then
+            pcall(function()
+                local character = game.Players.LocalPlayer.Character
+                if character and character.Parent.Name ~= "Dead" then
+                    local closestPlayer = GetClosestPlayer()
+                    if closestPlayer and closestPlayer:FindFirstChild("Head") then
+                        workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, closestPlayer.Head.Position)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait(math.random(1, 2)) do
+        if RandomTeleports then
+            pcall(function()
+                local character = game.Players.LocalPlayer.Character
+                if character and character.Parent.Name ~= "Dead" then
+                    for _, v in pairs(game:GetService("Workspace").Balls:GetChildren()) do
+                        if v:IsA("Part") then
+                            local part, speed = getSpeed(v)
+                            if part and speed then
+                                character.HumanoidRootPart.CFrame = part.CFrame * CFrame.new(TeleportDistanceX, 0, TeleportDistanceZ)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+local auto_rewards_enabled = false
+
+local Player = game.Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local net = ReplicatedStorage:WaitForChild("Packages")["_Index"]["sleitnick_net@0.1.0"].net
+
+local function claim_rewards()
+	pcall(function()
+		if ReplicatedStorage:FindFirstChild("Remote") and ReplicatedStorage.Remote:FindFirstChild("RemoteEvent") then
+			local event = ReplicatedStorage.Remote.RemoteEvent:FindFirstChild('ClaimLoginReward')
+			if event then
+				event:FireServer()
+			end
+		end
+	end)
+
+	task.defer(function()
+		for day = 1, 30 do
+			task.wait()
+			pcall(function()
+				if ReplicatedStorage.Remote:FindFirstChild("RemoteFunction") then
+					ReplicatedStorage.Remote.RemoteFunction:InvokeServer('ClaimNewDailyLoginReward', day)
+				end
+			end)
+			for _, wheel in ipairs({"SummerWheel", "CyborgWheel", "SynthWheel"}) do
+				pcall(function()
+					local processRoll = net:FindFirstChild("RE/" .. wheel .. "/ProcessRoll")
+					if processRoll then
+						processRoll:FireServer()
+					end
+				end)
+			end
+			pcall(function()
+				if net:FindFirstChild("RE/ProcessTournamentRoll") then
+					net["RE/ProcessTournamentRoll"]:FireServer()
+				end
+				if net:FindFirstChild("RE/RolledReturnCrate") then
+					net["RE/RolledReturnCrate"]:FireServer()
+				end
+				if net:FindFirstChild("RE/ProcessLTMRoll") then
+					net["RE/ProcessLTMRoll"]:FireServer()
+				end
+			end)
+		end
+	end)
+
+	task.defer(function()
+		for reward = 1, 6 do
+			pcall(function()
+				if net:FindFirstChild("RF/ClaimPlaytimeReward") then
+					net["RF/ClaimPlaytimeReward"]:InvokeServer(reward)
+				end
+			end)
+			pcall(function()
+				if net:FindFirstChild("RE/ClaimSeasonPlaytimeReward") then
+					net["RE/ClaimSeasonPlaytimeReward"]:FireServer(reward)
+				end
+			end)
+			pcall(function()
+				if ReplicatedStorage.Remote:FindFirstChild("RemoteFunction") then
+					ReplicatedStorage.Remote.RemoteFunction:InvokeServer('SpinWheel')
+				end
+			end)
+			pcall(function()
+				if net:FindFirstChild("RE/SpinFinished") then
+					net["RE/SpinFinished"]:FireServer()
+				end
+			end)
+		end
+	end)
+
+	task.defer(function()
+		for reward = 1, 5 do
+			pcall(function()
+				if net:FindFirstChild("RF/RedeemQuestsType") then
+					net["RF/RedeemQuestsType"]:InvokeServer('SummerClashEvent', 'Daily', reward)
+				end
+			end)
+		end
+	end)
+
+	task.defer(function()
+		for reward = 1, 4 do
+			pcall(function()
+				if net:FindFirstChild("RE/SummerWheel/ClaimStreakReward") then
+					net["RE/SummerWheel/ClaimStreakReward"]:FireServer(reward)
+				end
+			end)
+		end
+	end)
+end
+
+local reward_interval = 60
+
+task.defer(function()
+	while task.wait(reward_interval) do
+		pcall(function()
+			if auto_rewards_enabled then
+				claim_rewards()
+			end
+		end)
+	end
+end)
+
+local hookSupport = hookmetamethod and true
+
+local Client = game.Players.LocalPlayer
+local Character = Client.Character or Client.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local Camera = workspace.CurrentCamera
+local Mouse = Client:GetMouse()
+
+local revertedRemotes = {}
+local originalMetatables = {}
+local DirectionMode = "Camera"
+local EnableAntiCurve = false
+local EnableAutoCurve = false
+
+local function GetClosestPlayer()
+	local closest, distance = nil, math.huge
+	for _, v in pairs(Players:GetPlayers()) do
+		if v ~= Client and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+			local d = (v.Character.HumanoidRootPart.Position - HumanoidRootPart.Position).Magnitude
+			if d < distance then
+				closest = v
+				distance = d
+			end
+		end
+	end
+	return closest
+end
+
+local function GetDirection()
+	if EnableAntiCurve then
+		return (Camera.CFrame * CFrame.new(0, 0, -500)).Position
+	elseif EnableAutoCurve then
+		local t = GetClosestPlayer()
+		if t and t.Character and t.Character:FindFirstChild("HumanoidRootPart") then
+			local d = (t.Character.HumanoidRootPart.Position - HumanoidRootPart.Position)
+			return d.Unit + Vector3.new(0, math.sin(tick() * 5) * 0.2, 0)
+		end
+	elseif DirectionMode == "Camera" then
+		return Camera.CFrame.LookVector
+	elseif DirectionMode == "Mouse" then
+		return (Mouse.Hit.Position - HumanoidRootPart.Position).Unit
+	elseif DirectionMode == "Players" then
+		local target = GetClosestPlayer()
+		if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+			return (target.Character.HumanoidRootPart.Position - HumanoidRootPart.Position).Unit
+		end
+	elseif DirectionMode == "Normal" then
+		return Vector3.new(0, 0, -1)
+	elseif DirectionMode == "Up" then
+		return Vector3.new(0, 1, 0)
+	elseif DirectionMode == "Down" then
+		return Vector3.new(0, -1, 0)
+	elseif DirectionMode == "Left" then
+		return -Camera.CFrame.RightVector
+	elseif DirectionMode == "Right" then
+		return Camera.CFrame.RightVector
+	elseif DirectionMode == "Behind" then
+		return -Camera.CFrame.LookVector
+	elseif DirectionMode == "Random" then
+		return Vector3.new(math.random(-10, 10), math.random(-10, 10), math.random(-10, 10)).Unit
+	elseif DirectionMode == "FrontLeft" then
+		return (Camera.CFrame.LookVector - Camera.CFrame.RightVector).Unit
+	elseif DirectionMode == "FrontRight" then
+		return (Camera.CFrame.LookVector + Camera.CFrame.RightVector).Unit
+	elseif DirectionMode == "BackLeft" then
+		return (-Camera.CFrame.LookVector - Camera.CFrame.RightVector).Unit
+	elseif DirectionMode == "BackRight" then
+		return (-Camera.CFrame.LookVector + Camera.CFrame.RightVector).Unit
+	elseif DirectionMode == "SkywardSpiral" then
+		return (Camera.CFrame.LookVector + Vector3.new(0, math.sin(tick() * 5), 0)).Unit
+	elseif DirectionMode == "Zigzag" then
+		return (Camera.CFrame.LookVector + Camera.CFrame.RightVector * math.sin(tick() * 10)).Unit
+	elseif DirectionMode == "Spin" then
+		local angle = math.rad(tick() * 360 % 360)
+		return Vector3.new(math.cos(angle), 0, math.sin(angle)).Unit
+	elseif DirectionMode == "Bounce" then
+		return (Camera.CFrame.LookVector + Vector3.new(0, math.abs(math.sin(tick() * 5)) * 2, 0)).Unit
+	elseif DirectionMode == "Wave" then
+		return (Camera.CFrame.LookVector + Vector3.new(math.sin(tick() * 5), 0, 0)).Unit
+	elseif DirectionMode == "Orbit" then
+		local angle = tick() * 2
+		return (Camera.CFrame.LookVector + Vector3.new(math.cos(angle), 0, math.sin(angle))).Unit
+	elseif DirectionMode == "Chaos" then
+		return (Camera.CFrame.LookVector + Vector3.new(math.random(-100, 100)/100, math.random(-100, 100)/100, math.random(-100, 100)/100)).Unit
+	elseif DirectionMode == "TargetFeet" then
+		local t = GetClosestPlayer()
+		if t and t.Character then
+			local part = t.Character:FindFirstChild("LeftFoot") or t.Character:FindFirstChild("HumanoidRootPart")
+			if part then
+				return (part.Position - HumanoidRootPart.Position).Unit
+			end
+		end
+	elseif DirectionMode == "TargetHead" then
+		local t = GetClosestPlayer()
+		if t and t.Character then
+			local part = t.Character:FindFirstChild("Head")
+			if part then
+				return (part.Position - HumanoidRootPart.Position).Unit
+			end
+		end
+	elseif DirectionMode == "DiagonalUp" then
+		return (Camera.CFrame.LookVector + Vector3.new(0.5, 0.5, 0)).Unit
+	elseif DirectionMode == "DiagonalDown" then
+		return (Camera.CFrame.LookVector + Vector3.new(-0.5, -0.5, 0)).Unit
+	elseif DirectionMode == "FlipReverse" then
+		return (Camera.CFrame.LookVector * -1).Unit
+	elseif DirectionMode == "CurveLeft" then
+		return (Camera.CFrame.LookVector + -Camera.CFrame.RightVector * 0.5).Unit
+	elseif DirectionMode == "CurveRight" then
+		return (Camera.CFrame.LookVector + Camera.CFrame.RightVector * 0.5).Unit
+	elseif DirectionMode == "Whirlwind" then
+		local angle = math.rad(tick() * 720 % 360)
+		return (Camera.CFrame.LookVector + Vector3.new(math.cos(angle), math.sin(angle), 0)).Unit
+	elseif DirectionMode == "TeleportStyle" then
+		return Vector3.new(0, 100, 0)
+	elseif DirectionMode == "SlideAngle" then
+		return (Camera.CFrame.LookVector + Vector3.new(1, -0.2, 0)).Unit
+	elseif DirectionMode == "Drift" then
+		return (Camera.CFrame.LookVector + Camera.CFrame.RightVector * math.cos(tick() * 2)).Unit
+	end
+	return Camera.CFrame.LookVector
+end
+
+local function isValidRemoteArgs(args)
+	return #args == 7 and type(args[2]) == "string" and type(args[3]) == "number" and typeof(args[4]) == "CFrame" and type(args[5]) == "table" and type(args[6]) == "table" and type(args[7]) == "boolean"
+end
+
+local function hookRemote(remote)
+	if not revertedRemotes[remote] then
+		local meta = getrawmetatable(remote)
+		if not originalMetatables[meta] then
+			originalMetatables[meta] = true
+			setreadonly(meta, false)
+			local oldIndex = meta.__index
+			meta.__index = function(self, key)
+				if key == "FireServer" and self:IsA("RemoteEvent") then
+					return function(_, ...)
+						local args = { ... }
+						if isValidRemoteArgs(args) then
+							if not revertedRemotes[self] then
+								revertedRemotes[self] = args
+							end
+						end
+						return oldIndex(self, "FireServer")(_, table.unpack(args))
+					end
+				elseif key == "InvokeServer" and self:IsA("RemoteFunction") then
+					return function(_, ...)
+						local args = { ... }
+						if isValidRemoteArgs(args) then
+							if not revertedRemotes[self] then
+								revertedRemotes[self] = args
+							end
+						end
+						return oldIndex(self, "InvokeServer")(_, table.unpack(args))
+					end
+				end
+				return oldIndex(self, key)
+			end
+			setreadonly(meta, true)
+		end
+	end
+end
+
+if hookSupport then
+	for _, remote in pairs(game.ReplicatedStorage:GetChildren()) do
+		if remote:IsA("RemoteEvent") or remote:IsA("RemoteFunction") then
+			hookRemote(remote)
+		end
+	end
+	game.ReplicatedStorage.ChildAdded:Connect(function(child)
+		if child:IsA("RemoteEvent") or child:IsA("RemoteFunction") then
+			hookRemote(child)
+		end
+	end)
+end
+
+local Global = {
+	cooldown = false,
+	last_hit = 0,
+	parry_count = 0,
+}
+
+local function ParryFunction()
+	if hookSupport then
+		for remote, args in pairs(revertedRemotes) do
+			if typeof(remote) ~= "Instance" then continue end
+			if not remote:IsDescendantOf(game) then continue end
+			if remote:IsA("RemoteEvent") then
+				args[4] = CFrame.new(HumanoidRootPart.Position, HumanoidRootPart.Position + GetDirection())
+				remote:FireServer(unpack(args))
+			elseif remote:IsA("RemoteFunction") then
+				args[4] = CFrame.new(HumanoidRootPart.Position, HumanoidRootPart.Position + GetDirection())
+				remote:InvokeServer(unpack(args))
+			end
+		end
+	else
+		game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, game, 1)
+	end
+end
+
+local function get_character()
+    return game.Players.LocalPlayer and game.Players.LocalPlayer.Character
+end
+
+local function get_humanoid_root_part()
+    local char = get_character()
+    return char and char:FindFirstChild("HumanoidRootPart")
+end
+
+local function get_humanoid()
+    local char = get_character()
+    return char and char:
