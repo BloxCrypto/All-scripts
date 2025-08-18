@@ -9,32 +9,32 @@ velocity is the best non-Bloxstrap fork, designed to be the most lightweight, fa
 </p>
 
 <p align="center"><strong>
-  <img src="https://github.com/KloBraticc/Plexity/blob/main/Images/emojis/love.png" width="20"> Like Plexity? Star the repo and support development!
+  <img src="" width="20"> Like Plexity? Star the repo and support development!
 </strong></p>
 
 > [!CAUTION]
-> The only official place to get velocity is via this GitHub repository and the [Official Website](https://discord.gg/Vhmxr9KXQs). Avoid clones or unauthorized sites.
+> The only official place to get velocity is via this GitHub repository and the [Official Website](). Avoid clones or unauthorized sites.
 
 ---
 
 <h2>
-  <img src="https://github.com/KloBraticc/Plexity/blob/main/Images/emojis/IconPinkRocket.png" width="25"> Quick Links
+  <img src="" width="25"> Quick Links
 </h2>
 
 <div align="center">
 
-[![Plexity Wiki](https://img.shields.io/badge/Plexity-Wiki-purple)](https://plexitywiki.netlify.app)
-![Latest Release](https://img.shields.io/github/release/KloBraticc/Plexity.svg)
-[![Latest Release Downloads](https://img.shields.io/github/downloads/KloBraticc/Plexity/latest/total.svg)](https://github.com/KloBraticc/Plexity/releases)
-[![All Releases Downloads](https://img.shields.io/github/downloads/KloBraticc/Plexity/total.svg)](https://discord.gg/Vhmxr9KXQs)
-[![GitHub stars](https://img.shields.io/github/stars/KloBraticc/Plexity?style=social)]()
-[![Twitter](https://img.shields.io/static/v1?label=X&message=Braticpok&color=blue)](https://x.com/Braticpok)
-[![Discord](https://img.shields.io/discord/1388222191937523762?label=Discord&color=5865F2&logo=discord&logoColor=white)](https://discord.gg/Vhmxr9KXQs)
+[![Plexity Wiki]()]()
+![Latest Release]()
+[![Latest Release Downloads]()]()
+[![All Releases Downloads]()]()
+[![GitHub stars]()]()
+[![Twitter]()]()
+[![Discord]()]()
 
 </div>
 
 <details>
-  <summary><h2><img src="https://github.com/KloBraticc/Plexity/blob/main/Images/emojis/IconPinkStars.png" width="30"> Why Use Plexity?</h2></summary>
+  <summary><h2><img src="" width="30"> Why Use Plexity?</h2></summary>
 
 - ⚡ **Faster Boot Times** – Slim, optimized launcher core.
 - 🧩 **Patching System** – Inject custom logic into the client.
@@ -61,8 +61,7 @@ velocity is the best non-Bloxstrap fork, designed to be the most lightweight, fa
 - **Plugins** – Install or create your own plugins to enhance Plexity/Roblox.
 - **Multi-Instance Support** – Open multiple Roblox clients with ease.
 - **Disable RobloxCrashHandler** – Disables RobloxCrashHandler a Process that runs in the background with Roblox.
-- **Disable CPU 0** – Disables CPU-0 on Roblox.
-- **Limit CPU Affinity** – Limits the Amount of CPU Cores that Roblox uses so your GPU takes over.
+- **Disable CPU 0** – Dises that Roblox uses so your GPU takes over.
 - **Launch with Roblox** – Launch Anything with Roblox.
 - **Disable AutoUpdates** – Prevent Roblox from Updating to new versions.
 - **Log Generator** – Export logs for debugging or support.
