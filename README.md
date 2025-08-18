@@ -1,8 +1,8 @@
 <h1 align="center">
-  <img src="https://github.com/KloBraticc/Plexity/blob/main/Images/plexityv2.png" width="35" height="35"> Plexity
+  <img src="" width="35" height="35"> Plexity
 </h1>
 
-Plexity is the best non-Bloxstrap fork, designed to be the most lightweight, fast, performant, and stable bootstrapper.
+velocity is the best non-Bloxstrap fork, designed to be the most lightweight, fast, performant, and stable bootstrapper.
 
 <p align="center">
   <img src="https://github.com/KloBraticc/Plexity/blob/main/Images/plexityv2.png" alt="Plexity Logo" height="200">
@@ -13,7 +13,7 @@ Plexity is the best non-Bloxstrap fork, designed to be the most lightweight, fas
 </strong></p>
 
 > [!CAUTION]
-> The only official place to get Plexity is via this GitHub repository and the [Official Website](https://discord.gg/Vhmxr9KXQs). Avoid clones or unauthorized sites.
+> The only official place to get velocity is via this GitHub repository and the [Official Website](https://discord.gg/Vhmxr9KXQs). Avoid clones or unauthorized sites.
 
 ---
 
