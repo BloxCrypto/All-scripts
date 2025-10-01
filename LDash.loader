@@ -1,0 +1,19 @@
+-- Supported Games Table
+local supportedGames = {
+    [1234567890] = function()
+        loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/4f1c96f8500474ffefe921d49fd3ccda92f329d09b1f25fe6214ff1b671b1ab6/download"))()
+    end,
+    [9876543210] = function()
+        loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/43d740fa15dbb3d80e4dd027c519f2debec7e99b771cad0dada89d8555652930/download"))()
+    end,
+    [1122334455] = function()
+        loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/d4b6f5d952ed99ac18c2812374c5f060273afefef104a20ad4edb1fd9de8c09d/download"))()
+    end,
+}
+
+local placeId = game.PlaceId
+if supportedGames[placeId] then
+    supportedGames[placeId]()
+else
+    warn("Game not supported: PlaceId " .. placeId)
+end
