@@ -1,4 +1,4 @@
----@vars
+---@Levi
 local runService = game:GetService('RunService')
 local coregui = game:GetService('CoreGui')
 local players = game:GetService('Players')
@@ -7,8 +7,8 @@ local camera = workspace.CurrentCamera
 
 local esp = {
     -- settings
-    enabled = false,
-    teamcheck = true,
+    enabled = true,
+    teamcheck = fals,
     visiblecheck = false,
     outlines = true,
     limitdistance = false,
@@ -582,5 +582,6 @@ esp:connect(players.PlayerRemoving, function(plr)
 end)
 
 esp:bindtorenderstep('esp', 999, esp.update)
+
 
 return esp
