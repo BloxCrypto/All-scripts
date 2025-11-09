@@ -8,7 +8,7 @@ local camera = workspace.CurrentCamera
 local esp = {
     -- settings
     enabled = true,
-    teamcheck = fals,
+    teamcheck = false,
     visiblecheck = false,
     outlines = true,
     limitdistance = false,
@@ -585,3 +585,4 @@ esp:bindtorenderstep('esp', 999, esp.update)
 
 
 return esp
+
