@@ -1,10 +1,8 @@
---// https://discord.gg/xk43JgCp62
-
 local WindUI = (loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua")))();
 local Window = WindUI:CreateWindow({
-    Title = "A.Hao Hub",
-    Author = "Blox Fruits",
-    Folder = "By A.Hao",
+    Title = "Wonder Hub⚡",
+    Author = "Levi | Bloxfruits",
+    Folder = "By Levi",
     Size = UDim2.fromOffset(520, 300),
     Transparent = true,
     Theme = "Dark",
@@ -12,7 +10,7 @@ local Window = WindUI:CreateWindow({
     HasOutline = false,
 });
 Window:EditOpenButton({
-    Title = "A.Hao Hub",
+    Title = "Open Wonder",
     CornerRadius = UDim.new(0, 10),
     Draggable = false
 });
