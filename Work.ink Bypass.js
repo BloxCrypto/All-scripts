@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Work.ink bypass - Opera Compatible
+// @name         Work.ink Adblock Bypass and Auto-Clicker (Focus Aware) - Aggressive Modal Clicking
 // @namespace    http://tampermonkey.net/
-// @version      1000001
-// @description  Original owner dont update i updated
-// @author       Levi
+// @version      1000003
+// @description  Optimized version with aggressive modal clicking: Reduced delays, faster bypass, and aggressive clicking on modals/buttons for work.ink, including Opera compatibility.
+// @author       tomato.txt (aggressively optimized by Grok)
 // @match        *://*.work.ink/*
 // @match        https://workink.click/*
 // @match        *://*/direct/?*
@@ -46,7 +46,7 @@
     }
     addStyles(filters);
 
-    // --- Part 2: WebSocket Patch for Extension/App Bypass (Works on Opera and others) ---
+    // --- Part 2: WebSocket Patch for Extension/App Bypass (Optimized Delays) ---
     (async () => {
         if (window.location.hostname.includes("r.")) window.location.hostname = window.location.hostname.replace("r.", "");
         if (window.location.hostname === "work.ink") {
@@ -138,9 +138,9 @@
                         case "s_recaptcha_okay":
                             if (socials.length) {
                                 for (const [index, social] of socials.entries()) {
-                                    // performing social #${index+1}
+                                    // performing social #${index+1} with minimal delay
                                     this.oldSendImpl(payloads.social(social.url));
-                                    await sleep(3 * 1000);
+                                    await sleep(1000); // Reduced from 3s to 1s for speed
                                 }
                             }
 
@@ -154,7 +154,7 @@
                                             break;
                                         case "browserExtension":
                                             // skipping browser extension step (includes fake Opera installer)
-                                            if (activeMonetizationTypes.includes("readArticles")) await sleep(11 * 1000);
+                                            if (activeMonetizationTypes.includes("readArticles")) await sleep(5000); // Reduced from 11s to 5s
                                             this.oldSendImpl(payloads.browserExtension["1"]);
                                             break;
                                     }
@@ -184,7 +184,7 @@
         } else if (window.location.hostname == "workink.click") {
             const uuid = new URLSearchParams(window.location.search).get("t");
             fetch(`https://redirect-api.work.ink/externalPopups/${uuid}/pageOpened`);
-            await new Promise(r => setTimeout(r, 11 * 1000));
+            await new Promise(r => setTimeout(r, 5000)); // Reduced from 11s to 5s
             const { destination } = await fetch(`https://redirect-api.work.ink/externalPopups/${uuid}/destination`).then(r => r.json());
             const url = new URL(destination);
             if (url.searchParams.has("duf")) {
@@ -192,7 +192,7 @@
             } else {
                 window.location.href = destination;
             }
-            // wait 11 seconds
+            // wait reduced for speed
         } else {
             if (new URL(window.location.href).searchParams.has("duf")) {
                 var link = document.createElement("a");
@@ -204,18 +204,44 @@
         }
     })();
 
-    // --- Part 3: Automatic Button Clicker (Focus Aware) ---
-    const clickIntervalTime = 250; // Clicks every 250 milliseconds (4 times a second)
+    // --- Part 3: Aggressive Modal Button Clicker (Focus Aware, Ultra-Fast Interval) ---
+    const clickIntervalTime = 50; // Reduced to 50ms for aggressive clicking (20 times a second)
     let clickerInterval = null;
 
     function startClicking() {
         // Ensure we don't start multiple intervals
         if (clickerInterval === null) {
             clickerInterval = setInterval(() => {
-                const buttons = document.querySelectorAll('.button.large.accessBtn');
-                buttons.forEach(button => {
+                // Target access buttons
+                const accessButtons = document.querySelectorAll('.button.large.accessBtn');
+                accessButtons.forEach(button => {
                     if (button) {
                         button.click();
+                    }
+                });
+
+                // Aggressive modal closing: Click on overlay to dismiss
+                const overlay = document.querySelector('div.fixed.inset-0.bg-black\\/50.backdrop-blur-sm');
+                if (overlay) {
+                    overlay.click();
+                }
+
+                // Click on common close buttons/X icons in modals
+                const closeButtons = document.querySelectorAll('button.close, .close, [aria-label="Close"], [data-dismiss="modal"], svg[role="img"] path[d*="close"], .modal-close');
+                closeButtons.forEach(btn => {
+                    if (btn && btn.offsetParent !== null) { // Only visible elements
+                        btn.click();
+                    }
+                });
+
+                // Additional aggressive targets: Any button with "close", "cancel", "skip" text (case insensitive)
+                const allButtons = document.querySelectorAll('button, .btn');
+                allButtons.forEach(btn => {
+                    const text = btn.textContent.toLowerCase();
+                    if (text.includes('close') || text.includes('cancel') || text.includes('skip') || text.includes('done')) {
+                        if (btn.offsetParent !== null) {
+                            btn.click();
+                        }
                     }
                 });
             }, clickIntervalTime);
