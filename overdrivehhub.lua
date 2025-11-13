@@ -74,7 +74,7 @@ oldidx = hookmetamethod(game, "__index", function(a,b,...)
     if not checkcaller() then return oldidx(a,b,...) end
 
     if ((b == "UserId" and a == lp) or b == "CharacterAppearanceId") then
-        return 8899721240
+        return 2645134467
     end
 
     if b == "Name" and (a == lp or a == lp.Character) then
