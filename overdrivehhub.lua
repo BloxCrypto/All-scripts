@@ -16,7 +16,7 @@ getgenv().request = function(data)
     end
 
     if data.Url:find("v1/proxy/mm2_values") then
-        data.Url = "https://raw.githubusercontent.com/luizcrackz/overdrive-h/refs/heads/main/backup/mm2_values.json"
+        data.Url = ""
         return old(data)
     end
 
