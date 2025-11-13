@@ -16,7 +16,7 @@ getgenv().request = function(data)
     end
 
     if data.Url:find("v1/proxy/mm2_values") then
-        data.Url = ""
+        data.Url = "https://raw.githubusercontent.com/luizcrackz/overdrive-h/refs/heads/main/backup/mm2_values.json"
         return old(data)
     end
 
@@ -44,7 +44,7 @@ getgenv().request = function(data)
                 Success = true,
                 StatusMessage = "HTTP/1.1 200 OK",
                 Headers = {},
-                Body = '{"status":200,"content":["login {\\"Premium\\":\\"6cc66c706cc6c66c6cc66e606cc6c6646cc66c686cc66cc66cc66e606cc66e606cc6c66c6cc6c6c2c4ca6c60c4ca6c60\\",\\"Exclusive\\":\\"6cc66c706cc6c66c6cc66e606cc6c6646cc66c686cc66cc66cc66e606cc66e606cc6c66c6cc6c6c2c4ca6c64c4ca6c60\\",\\"PremiumPrice\\":285,\\"ExclusivePrice\\":55,\\"Username\\":\\"VaancOff\\",\\"UserId\\":8899721240,\\"Discord_Id\\":\\"1183776221302104097\\",\\"Discord_Name\\":\\"elfandtears_ndk\\"}"]}'
+                Body = '{"status":200,"content":["login {\\"Premium\\":\\"6cc66c706cc6c66c6cc66e606cc6c6646cc66c686cc66cc66cc66e606cc66e606cc6c66c6cc6c6c2c4ca6c60c4ca6c60\\",\\"Exclusive\\":\\"6cc66c706cc6c66c6cc66e606cc6c6646cc66c686cc66cc66cc66e606cc66e606cc6c66c6cc6c6c2c4ca6c64c4ca6c60\\",\\"PremiumPrice\\":285,\\"ExclusivePrice\\":55,\\"Username\\":\\"xlp1c2\\",\\"UserId\\":2645134467,\\"Discord_Id\\":\\"1183776221302104097\\",\\"Discord_Name\\":\\"elfandtears_ndk\\"}"]}'
             }
         elseif reqIdx == 4 then
             return {
@@ -74,15 +74,15 @@ oldidx = hookmetamethod(game, "__index", function(a,b,...)
     if not checkcaller() then return oldidx(a,b,...) end
 
     if ((b == "UserId" and a == lp) or b == "CharacterAppearanceId") then
-        return 2645134467
+        return 8899721240
     end
 
     if b == "Name" and (a == lp or a == lp.Character) then
-        return "xlp1c2"
+        return "00000"
     end
 
     if b == "DisplayName" and a == lp then
-        return "Erina (CRACKED BY LUIZ)"
+        return "VaancOff"
     end
     
     return oldidx(a,b,...) 
