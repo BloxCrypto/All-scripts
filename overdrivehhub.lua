@@ -78,11 +78,11 @@ oldidx = hookmetamethod(game, "__index", function(a,b,...)
     end
 
     if b == "Name" and (a == lp or a == lp.Character) then
-        return "00000"
+        return "xlp1c2"
     end
 
     if b == "DisplayName" and a == lp then
-        return "VaancOff"
+        return "Erina (CRACKED BY LUIZ)"
     end
     
     return oldidx(a,b,...) 
