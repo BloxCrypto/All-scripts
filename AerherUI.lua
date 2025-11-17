@@ -1,11 +1,14 @@
--- AetherUI.lua
+-- AetherUI.lua (Fixed Version)
 local AetherUI = {}
 AetherUI.__index = AetherUI
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 -- Tween Info
 local TWEEN_INFO = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
@@ -18,11 +21,11 @@ function AetherUI.new(config)
     self.Name = config.Name or "AetherUI"
     self.Keybind = config.Keybind or Enum.KeyCode.RightControl
     
-    -- Main ScreenGui
+    -- Main ScreenGui (now in PlayerGui for runtime access)
     self.ScreenGui = Instance.new("ScreenGui")
     self.ScreenGui.Name = "AetherUI"
     self.ScreenGui.ResetOnSpawn = false
-    self.ScreenGui.Parent = CoreGui
+    self.ScreenGui.Parent = PlayerGui
 
     -- Main Frame
     self.MainFrame = Instance.new("Frame")
@@ -40,15 +43,27 @@ function AetherUI.new(config)
     Stroke.Color = Color3.fromRGB(60, 60, 80)
     Stroke.Thickness = 1.5
 
-    -- Title Bar
+    -- Title Bar (now a Frame for better dragging)
+    local TitleBar = Instance.new("Frame")
+    TitleBar.Name = "TitleBar"
+    TitleBar.Size = UDim2.new(1, 0, 0, 50)
+    TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    TitleBar.BorderSizePixel = 0
+    TitleBar.Parent = self.MainFrame
+
+    local TitleCorner = Instance.new("UICorner", TitleBar)
+    TitleCorner.CornerRadius = UDim.new(0, 12)
+
     self.Title = Instance.new("TextLabel")
-    self.Title.Size = UDim2.new(1, 0, 0, 50)
+    self.Title.Size = UDim2.new(1, -50, 1, 0)
     self.Title.BackgroundTransparency = 1
     self.Title.Text = self.Name
     self.Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     self.Title.Font = Enum.Font.GothamBold
     self.Title.TextSize = 18
-    self.Title.Parent = self.MainFrame
+    self.Title.TextXAlignment = Enum.TextXAlignment.Left
+    self.Title.Position = UDim2.new(0, 15, 0, 0)
+    self.Title.Parent = TitleBar
 
     -- Close Button
     local CloseBtn = Instance.new("TextButton")
@@ -59,8 +74,10 @@ function AetherUI.new(config)
     CloseBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
     CloseBtn.Font = Enum.Font.GothamBold
     CloseBtn.TextSize = 24
-    CloseBtn.Parent = self.MainFrame
+    CloseBtn.Parent = TitleBar
 
+    -- Wait for CloseBtn to be fully parented before connecting
+    RunService.Heartbeat:Wait()
     CloseBtn.MouseButton1Click:Connect(function()
         self:Toggle()
     end)
@@ -70,6 +87,7 @@ function AetherUI.new(config)
     self.TabContainer.Size = UDim2.new(0, 140, 1, -50)
     self.TabContainer.Position = UDim2.new(0, 0, 0, 50)
     self.TabContainer.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+    self.TabContainer.BorderSizePixel = 0
     self.TabContainer.Parent = self.MainFrame
 
     local TabCorner = Instance.new("UICorner", self.TabContainer)
@@ -80,33 +98,36 @@ function AetherUI.new(config)
     self.ContentArea.Size = UDim2.new(1, -140, 1, -50)
     self.ContentArea.Position = UDim2.new(0, 140, 0, 50)
     self.ContentArea.BackgroundTransparency = 1
+    self.ContentArea.BorderSizePixel = 0
     self.ContentArea.Parent = self.MainFrame
 
     self.Tabs = {}
     self.CurrentTab = nil
 
-    -- Dragging
+    -- Dragging (improved for mobile/touch)
     local dragging = false
     local dragStart = nil
     local startPos = nil
 
-    self.Title.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    local function updateInput(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            self.MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end
+
+    TitleBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             dragStart = input.Position
             startPos = self.MainFrame.Position
         end
     end)
 
-    self.Title.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - dragStart
-            self.MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
+    TitleBar.InputChanged:Connect(updateInput)
 
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = false
         end
     end)
@@ -122,7 +143,7 @@ function AetherUI.new(config)
     return self
 end
 
--- Create Tab
+-- Create Tab (with fix for event connection)
 function AetherUI:Tab(name, icon)
     local tab = {}
     tab.Name = name
@@ -134,6 +155,7 @@ function AetherUI:Tab(name, icon)
     tab.Button.TextColor3 = Color3.fromRGB(180, 180, 200)
     tab.Button.Font = Enum.Font.Gotham
     tab.Button.TextXAlignment = Enum.TextXAlignment.Left
+    tab.Button.BorderSizePixel = 0
     tab.Button.Parent = self.TabContainer
 
     local btnCorner = Instance.new("UICorner", tab.Button)
@@ -147,32 +169,36 @@ function AetherUI:Tab(name, icon)
     tab.Content.CanvasSize = UDim2.new(0, 0, 0, 0)
     tab.Content.AutomaticCanvasSize = Enum.AutomaticSize.Y
     tab.Content.Visible = false
+    tab.Content.BorderSizePixel = 0
     tab.Content.Parent = self.ContentArea
 
     local layout = Instance.new("UIListLayout", tab.Content)
     layout.Padding = UDim.new(0, 8)
     layout.FillDirection = Enum.FillDirection.Vertical
 
+    -- FIX: Wait one heartbeat to ensure button is fully in data model
+    RunService.Heartbeat:Wait()
     tab.Button.MouseButton1Click:Connect(function()
         if self.CurrentTab then
             self.CurrentTab.Content.Visible = false
             TweenService:Create(self.CurrentTab.Button, TWEEN_INFO, {BackgroundColor3 = Color3.fromRGB(30, 30, 35)}):Play()
-            TweenService:Create(self.CurrentTab.Button.TextColor3, TWEEN_INFO, {Value = Color3.fromRGB(180, 180, 200)}):Play()
+            TweenService:Create(self.CurrentTab.Button, TWEEN_INFO, {TextColor3 = Color3.fromRGB(180, 180, 200)}):Play()
         end
         self.CurrentTab = tab
         tab.Content.Visible = true
         TweenService:Create(tab.Button, TWEEN_INFO, {BackgroundColor3 = Color3.fromRGB(70, 70, 255)}):Play()
+        TweenService:Create(tab.Button, TWEEN_INFO, {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
     end)
 
     if #self.Tabs == 0 then
-        tab.Button:MouseButton1Click()
+        tab.Button.MouseButton1Click:Fire()  -- Simulate click to select first tab
     end
 
     table.insert(self.Tabs, tab)
     return tab
 end
 
--- Elements
+-- Elements (unchanged, but with heartbeat wait for safety)
 function AetherUI:Button(tab, text, callback)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, 0, 0, 40)
@@ -180,11 +206,14 @@ function AetherUI:Button(tab, text, callback)
     btn.Text = text
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 14
+    btn.BorderSizePixel = 0
     btn.Parent = tab.Content
 
     local corner = Instance.new("UICorner", btn)
     corner.CornerRadius = UDim.new(0, 8)
 
+    RunService.Heartbeat:Wait()
     btn.MouseButton1Click:Connect(callback)
 
     btn.MouseEnter:Connect(function()
@@ -202,6 +231,7 @@ function AetherUI:Toggle(tab, text, default, callback)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, 0, 0, 40)
     frame.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+    frame.BorderSizePixel = 0
     frame.Parent = tab.Content
 
     local corner = Instance.new("UICorner", frame)
@@ -213,6 +243,7 @@ function AetherUI:Toggle(tab, text, default, callback)
     label.BackgroundTransparency = 1
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Font = Enum.Font.Gotham
+    label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Position = UDim2.new(0, 15, 0, 0)
 
@@ -220,6 +251,7 @@ function AetherUI:Toggle(tab, text, default, callback)
     switch.Size = UDim2.new(0, 50, 0, 25)
     switch.Position = UDim2.new(1, -65, 0.5, -12.5)
     switch.BackgroundColor3 = toggle.Value and Color3.fromRGB(70, 70, 255) or Color3.fromRGB(70, 70, 70)
+    switch.BorderSizePixel = 0
 
     local switchCorner = Instance.new("UICorner", switch)
     switchCorner.CornerRadius = UDim.new(0, 12)
@@ -228,11 +260,13 @@ function AetherUI:Toggle(tab, text, default, callback)
     circle.Size = UDim2.new(0, 20, 0, 20)
     circle.Position = toggle.Value and UDim2.new(1, -25, 0.5, -10) or UDim2.new(0, 5, 0.5, -10)
     circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    circle.BorderSizePixel = 0
     local circleCorner = Instance.new("UICorner", circle)
     circleCorner.CornerRadius = UDim.new(1, 0)
 
+    RunService.Heartbeat:Wait()
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             toggle.Value = not toggle.Value
             callback(toggle.Value)
             TweenService:Create(switch, TWEEN_INFO, {BackgroundColor3 = toggle.Value and Color3.fromRGB(70, 70, 255) or Color3.fromRGB(70, 70, 70)}):Play()
@@ -243,14 +277,14 @@ function AetherUI:Toggle(tab, text, default, callback)
     return toggle
 end
 
--- Add more elements (Slider, Dropdown, Keybind, etc.) if you want — let me know!
-
+-- Notification (unchanged)
 function AetherUI:Notify(title, text, duration)
     duration = duration or 5
     local notify = Instance.new("Frame")
     notify.Size = UDim2.new(0, 300, 0, 80)
     notify.Position = UDim2.new(1, -320, 1, -100)
     notify.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    notify.BorderSizePixel = 0
     notify.Parent = self.ScreenGui
 
     local corner = Instance.new("UICorner", notify)
@@ -258,6 +292,7 @@ function AetherUI:Notify(title, text, duration)
 
     local stroke = Instance.new("UIStroke", notify)
     stroke.Color = Color3.fromRGB(70, 70, 255)
+    stroke.Thickness = 1
 
     local t = Instance.new("TextLabel", notify)
     t.Text = title
@@ -266,6 +301,7 @@ function AetherUI:Notify(title, text, duration)
     t.BackgroundTransparency = 1
     t.TextColor3 = Color3.fromRGB(70, 70, 255)
     t.Font = Enum.Font.GothamBold
+    t.TextSize = 16
 
     local d = Instance.new("TextLabel", notify)
     d.Text = text
@@ -274,6 +310,7 @@ function AetherUI:Notify(title, text, duration)
     d.BackgroundTransparency = 1
     d.TextColor3 = Color3.fromRGB(200, 200, 200)
     d.Font = Enum.Font.Gotham
+    d.TextSize = 14
     d.TextWrapped = true
 
     TweenService:Create(notify, TweenInfo.new(0.4), {Position = UDim2.new(1, -320, 1, -100)}):Play()
@@ -288,6 +325,7 @@ end
 function AetherUI:Toggle()
     self.MainFrame.Visible = not self.MainFrame.Visible
     if self.MainFrame.Visible then
+        self.MainFrame.Size = UDim2.new(0, 0, 0, 0)  -- Start small for animation
         TweenService:Create(self.MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 600, 0, 450)}):Play()
     else
         TweenService:Create(self.MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0, 0)}):Play()
