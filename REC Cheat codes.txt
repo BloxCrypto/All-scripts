@@ -1,0 +1,19 @@
+Permanent Cheats
+
+"YODIK" – Increases Stamina by 1000
+"MONEYPLZ" – Increase credits by 1,000,000
+"SUAVEDUDE" – Sets Charisma to MAX
+"NINJA" – Sets Dexterity to MAX
+"EINSTEIN" – Sets Intelligence to MAX
+"ZEDMART" – Get 99 quantity of each item
+"TOLOVERS" - Increase Relationship to 100 and unlocks Relationship caps locked behind a quest
+Session-Only Cheats
+
+"ROLEXTIME" – Max time during Night Sequence
+"DEEPSLEEPER" – No wakeup during Night Sequence
+"RISELIA" – Kan will not check up during Night Sequence
+"CHIPBAT" – No flies will appear during Night Sequence
+"SLOTH" – Skip all nighttime minigames
+"BLOWONDICE" - Automatically win all dice rolls
+
+Reminder: Permanent cheats that affect your stats, inventory, and skills and will carry over between game sessions. Session-only cheats that affect gameplay during the current session and will reset upon exiting the game.
