@@ -17,7 +17,7 @@ Library.ShowCustomCursor = true
 Library.ToggleKeybind = Enum.KeyCode.U
 
 local Window = Library:CreateWindow({
-    Title = "UNXHub",
+    Title = "Blueflare",
     Footer = "Version: " .. (getgenv().unxshared and getgenv().unxshared.version or "Unknown") .. ", Game: " .. (getgenv().unxshared and getgenv().unxshared.gamename or "Unknown") .. ", Player: " .. (getgenv().unxshared and getgenv().unxshared.playername or "Unknown"),
     Icon = 73740010358428,
     NotifySide = "Right",
