@@ -19,9 +19,9 @@ Library.ToggleKeybind = Enum.KeyCode.U
 local Window = Library:CreateWindow({
     Title = "Blueflare",
     Footer = "Version: " .. (getgenv().unxshared and getgenv().unxshared.version or "Unknown") .. ", Game: " .. (getgenv().unxshared and getgenv().unxshared.gamename or "Unknown") .. ", Player: " .. (getgenv().unxshared and getgenv().unxshared.playername or "Unknown"),
-    Icon = 73740010358428,
+    Icon = 87954381520562,
     NotifySide = "Right",
-    ShowCustomCursor = true,
+    ShowCustomCursor = false,
 })
 
 local Tabs = {
@@ -1445,7 +1445,7 @@ SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({"MenuKeybind"})
 
-ThemeManager:SetFolder("unxhub")
+ThemeManager:SetFolder("Bluefla")
 SaveManager:SetFolder("unxhub")
 
 SaveManager:BuildConfigSection(Tabs["UI Settings"])
