@@ -1445,8 +1445,8 @@ SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({"MenuKeybind"})
 
-ThemeManager:SetFolder("Bluefla")
-SaveManager:SetFolder("unxhub")
+ThemeManager:SetFolder("BlueflareThemes")
+SaveManager:SetFolder("Blueflare")
 
 SaveManager:BuildConfigSection(Tabs["UI Settings"])
 ThemeManager:ApplyToTab(Tabs["UI Settings"])
