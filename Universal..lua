@@ -1185,20 +1185,7 @@ MenuGroup:AddButton("Unload", function()
 	Library:Unload()
 	TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
 end)
-MenuGroup:AddLabel("<font color='rgb(255,0,0)'><u>DISCLAIMER</u></font>: We Use This To See How Many Users We Get, <u>We Do Not Share This Information With Any Third Partys</u>.", true)
-MenuGroup:AddCheckbox("OptOutLog", {
-	Text = "Opt-Out Log",
-	Default = isfile("optout.unx"),
-	Callback = function(Value)
-		if Value then
-			writefile("optout.unx", "")
-		else
-			if isfile("optout.unx") then
-				delfile("optout.unx")
-			end
-		end
-	end,
-})
+
 MenuGroup:AddDivider()
 MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", {Default="U", NoUI=true, Text="Menu keybind"})
 Library.ToggleKeybind = Options.MenuKeybind
