@@ -1,6 +1,3 @@
--- ts file was generated at discord.gg/25ms
-
-
 local vu1 = cloneref(game:GetService("Players"))
 local vu2 = vu1.LocalPlayer
 local vu3 = cloneref(game:GetService("ReplicatedStorage"))
