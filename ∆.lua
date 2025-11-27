@@ -17,8 +17,7 @@ local Window = WindUI:CreateWindow({
     BackgroundImageTransparency = 0.42,
     HideSearchBar = false,
     ScrollBarEnabled = false,
-   
-    User = {
+   User = {
         Enabled = true,
         Anonymous = false,
         Callback = function()
@@ -345,75 +344,6 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-local LocalPlayer = Players.LocalPlayer
-local noclipEnabled = false
-
--- // TOGGLE
-local Toggle = Tab:Toggle({
-    Title = "NoClip",
-    Desc = "Walk through walls (your game only)",
-    Icon = "bird",
-    Type = "Checkbox",
-    Value = false,
-    Callback = function(state)
-        noclipEnabled = state
-    end
-})
-
--- // Noclip loop
-RunService.Stepped:Connect(function()
-    if noclipEnabled then
-        local character = LocalPlayer.Character
-        if character then
-            for _, part in ipairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = false
-                end
-            end
-        end
-    else
-        local character = LocalPlayer.Character
-        if character then
-            for _, part in ipairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-        end
-    end
-end)
-
-local bhopRunning = false
-
-local Toggle = Tab:Toggle({
-    Title = "Bunny hop",
-    Desc = "Automatically jump",
-    Icon = "bird",
-    Type = "Checkbox",
-    Value = false,
-    Callback = function(state)
-        bhopRunning = state
-
-        -- Start or stop bunny hop loop
-        task.spawn(function()
-            while bhopRunning do
-                local player = game.Players.LocalPlayer
-                local char = player.Character
-                local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-
-                if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
-                    humanoid.Jump = true
-                end
-
-                task.wait(0.1) -- adjust speed of hopping
-            end
-        end)
-    end
-})
-
 local Tab = Window:Tab({
     Title = "Visual",
     Icon = "bird", -- optional
@@ -673,5 +603,124 @@ local Colorpicker = Tab:Colorpicker({
                 frame.BorderColor3 = color
             end
         end
+    end
+})
+
+local Tab = Window:Tab({
+    Title = "Server",
+    Icon = "bird", -- optional
+    Locked = false,
+})
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function enableAntiFling()
+    local char = LocalPlayer.Character
+    if not char then return end
+
+    -- Loop through all parts of your character
+    for _, part in pairs(char:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+            part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+
+            -- prevent being pushed by huge velocity
+            part:GetPropertyChangedSignal("Velocity"):Connect(function()
+                part.Velocity = Vector3.new(0, 0, 0)
+            end)
+        end
+    end
+end
+
+local function disableAntiFling()
+    local char = LocalPlayer.Character
+    if not char then return end
+
+    for _, part in pairs(char:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true
+            part.CustomPhysicalProperties = PhysicalProperties.new(1, 0.3, 0.5)
+        end
+    end
+end
+
+local Toggle = Tab:Toggle({
+    Title = "Anti Fling",
+    Desc = "Prevents other players from flinging you",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        if state then
+            enableAntiFling()
+
+            -- Re-apply after respawn
+            LocalPlayer.CharacterAdded:Connect(function()
+                task.wait(1)
+                enableAntiFling()
+            end)
+        else
+            disableAntiFling()
+        end
+    end
+})
+
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local placeId = game.PlaceId
+
+-- These will store the user’s choices:
+local selectedOption = "Rejoin"
+local jobIdInput = ""
+
+local Button = Tab:Button({
+    Title = "Advanced Button",
+    Color = Color3.fromHex("#a2ff30"),
+    Justify = "Center",
+    IconAlign = "Left",
+    Icon = "",
+    Callback = function()
+        if selectedOption == "Rejoin" then
+            -- REJOIN SAME SERVER
+            TeleportService:Teleport(placeId, player)
+
+        elseif selectedOption == "ServerHop" then
+            -- SERVERHOP TO A RANDOM SERVER IN THE SAME GAME
+            TeleportService:Teleport(placeId, player)
+
+        elseif selectedOption == "JobId" then
+            if jobIdInput ~= "" then
+                -- JOIN SPECIFIC SERVER BY JOB ID
+                TeleportService:TeleportToPlaceInstance(placeId, jobIdInput, player)
+            else
+                warn("No JobId entered!")
+            end
+        end
+    end
+})
+
+local Dropdown = Tab:Dropdown({
+    Title = "Action Type",
+    Desc = "Choose what the button will do",
+    Values = { "Rejoin", "ServerHop", "JobId" },
+    Value = "Rejoin",
+    Callback = function(option)
+        selectedOption = option
+        print("Selected option:", option)
+    end
+})
+
+local Input = Tab:Input({
+    Title = "JobId",
+    Desc = "Enter a JobId to join",
+    Value = "",
+    Placeholder = "Enter JobId...",
+    Type = "Input",
+    Callback = function(input)
+        jobIdInput = input
+        print("JobId set to:", input)
     end
 })
