@@ -1,13 +1,34 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 local Window = WindUI:CreateWindow({
-    Title = "|||||||||||||||||||||||||||||||",
-    Icon = "door-open", -- lucide icon. optional
-    Author = "|||||||||||||||||||||||||||||||", -- optional
+    Title = "My Super Hub",
+    Icon = "door-open", -- lucide icon
+    Author = "by .ftgs and .ftgs",
+    Folder = "MySuperHub",
+    
+    -- ↓ This all is Optional. You can remove it.
+    Size = UDim2.fromOffset(678, 460),
+    MinSize = Vector2.new(560, 350),
+    MaxSize = Vector2.new(850, 560),
+    Transparent = true,
+    Theme = "Dark",
+    Resizable = true,
+    SideBarWidth = 160,
+    BackgroundImageTransparency = 0.42,
+    HideSearchBar = false,
+    ScrollBarEnabled = false,
+   
+    User = {
+        Enabled = true,
+        Anonymous = false,
+        Callback = function()
+            print("clicked")
+        end,
+    },
 })
 
 Window:EditOpenButton({
-    Title = "|||||||||||||||||||||||||||||||",
+    Title = "Open Example UI",
     Icon = "monitor",
     CornerRadius = UDim.new(0,16),
     StrokeThickness = 2,
@@ -20,577 +41,24 @@ Window:EditOpenButton({
     Draggable = true,
 })
 
-Window:Tag({
-    Title = "Beta 1.6",
-    Icon = "github",
-    Color = Color3.fromHex("#30ff6a"),
-    Radius = 0, -- from 0 to 13
-})
-
 local Tab = Window:Tab({
-    Title = "Player",
-    Icon = "layers", -- optional
+    Title = "info",
+    Icon = "bird", -- optional
     Locked = false,
 })
 
-local Section = Tab:Section({ 
-    Title = "Player",
-})
+local Players = game:GetService("Players")
 
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+local playerCount = #Players:GetPlayers()
 
--- Prevent automatic notifications on first initialization
-local toggleInitialized = false
-local inputInitialized = false
-
--- Toggle to enable/disable custom walkspeed
-local Toggle = Tab:Toggle({
-    Title = "Toggle Walkspeed",
-    Desc = "Enable custom walkspeed",
-    Icon = "arrow-big-right-dash",
-    Type = "Toggle",
-    Value = false, -- default value
-    Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return
-        end
-
-        if state then
-            WindUI:Notify({
-                Title = "Walkspeed Enabled",
-                Content = "Custom walkspeed is now active!",
-                Duration = 3,
-                Icon = "slash",
-            })
-        else
-            humanoid.WalkSpeed = 16 -- reset to default
-            WindUI:Notify({
-                Title = "Walkspeed Disabled",
-                Content = "Walkspeed has been reset to default (16).",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
--- Input to set custom walkspeed
-local Input = Tab:Input({
-    Title = "Walkspeed",
-    Desc = "Set your walkspeed",
-    Value = "16", -- default value
-    InputIcon = "slash",
-    Type = "Input",
-    Placeholder = "Enter number...",
-    Callback = function(input)
-        if not inputInitialized then
-            inputInitialized = true
-            return
-        end
-
-        local speed = tonumber(input)
-        if speed then
-            if Toggle.Value then
-                humanoid.WalkSpeed = speed
-                WindUI:Notify({
-                    Title = "Walkspeed Updated",
-                    Content = "Your walkspeed is now "..speed,
-                    Duration = 3,
-                    Icon = "slash",
-                })
-            else
-                WindUI:Notify({
-                    Title = "Toggle Off",
-                    Content = "Enable the toggle first to apply walkspeed.",
-                    Duration = 3,
-                    Icon = "slash",
-                })
-            end
-        else
-            WindUI:Notify({
-                Title = "Invalid Input",
-                Content = "Please enter a valid number.",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
--- Prevent automatic notifications on first initialization
-local toggleInitialized = false
-local inputInitialized = false
-
--- Toggle to enable/disable custom jumppower
-local Toggle = Tab:Toggle({
-    Title = "JumpPower Toggle",
-    Desc = "Enable custom jumppower",
-    Icon = "arrow-up-from-line",
-    Type = "Toggle",
-    Value = false, -- default value
-    Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return
-        end
-
-        if state then
-            WindUI:Notify({
-                Title = "JumpPower Enabled",
-                Content = "Custom jumppower is now active!",
-                Duration = 3,
-                Icon = "slash",
-            })
-        else
-            humanoid.JumpPower = 50 -- reset to default
-            WindUI:Notify({
-                Title = "JumpPower Disabled",
-                Content = "JumpPower has been reset to default (50).",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
--- Input to set custom jumppower
-local Input = Tab:Input({
-    Title = "JumpPower",
-    Desc = "Set your jumppower",
-    Value = "50", -- default value
-    InputIcon = "slash",
-    Type = "Input",
-    Placeholder = "Enter number...",
-    Callback = function(input)
-        if not inputInitialized then
-            inputInitialized = true
-            return
-        end
-
-        local power = tonumber(input)
-        if power then
-            if Toggle.Value then
-                humanoid.JumpPower = power
-                WindUI:Notify({
-                    Title = "JumpPower Updated",
-                    Content = "Your jumppower is now "..power,
-                    Duration = 3,
-                    Icon = "slash",
-                })
-            else
-                WindUI:Notify({
-                    Title = "Toggle Off",
-                    Content = "Enable the toggle first to apply jumppower.",
-                    Duration = 3,
-                    Icon = "slash",
-                })
-            end
-        else
-            WindUI:Notify({
-                Title = "Invalid Input",
-                Content = "Please enter a valid number.",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
-local player = game.Players.LocalPlayer
-local UIS = game:GetService("UserInputService")
-local infJumpEnabled = false
-
-local Toggle = Tab:Toggle({
-    Title = "Infinite Jump",
-    Desc = "Enable or disable infinite jump",
-    Icon = "move-up",
-    Type = "Toggle",
-    Value = false, -- default value
-    Callback = function(state)
-        infJumpEnabled = state
-
-        if state then
-            WindUI:Notify({
-                Title = "Infinite Jump Enabled",
-                Content = "You can now jump infinitely!",
-                Duration = 3,
-                Icon = "slash",
-            })
-        else
-            WindUI:Notify({
-                Title = "Infinite Jump Disabled",
-                Content = "Infinite jump has been turned off.",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
--- Detect jump input and apply infinite jump
-UIS.JumpRequest:Connect(function()
-    if infJumpEnabled then
-        local character = player.Character
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-            end
-        end
-    end
-end)
-
-local player = game.Players.LocalPlayer
-
--- Prevent automatic notification on initialization
-local toggleInitialized = false
-
-local Toggle = Tab:Toggle({
-    Title = "Disable Jump",
-    Desc = "Enable or disable jumping",
-    Icon = "circle-off",
-    Type = "Toggle",
-    Value = false, -- default value
-    Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return -- ignore first call
-        end
-
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:WaitForChild("Humanoid")
-
-        if state then
-            humanoid.JumpPower = 0
-            WindUI:Notify({
-                Title = "Jump Disabled",
-                Content = "You can no longer jump!",
-                Duration = 3,
-                Icon = "slash",
-            })
-        else
-            humanoid.JumpPower = 50 -- reset to default
-            WindUI:Notify({
-                Title = "Jump Enabled",
-                Content = "Jumping has been restored!",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
-local Tab = Window:Tab({
-    Title = "Visual",
-    Icon = "wallpaper", -- optional
-    Locked = false,
-})
-
-local Section = Tab:Section({ 
-    Title = "World",
-})
-
-local Lighting = game:GetService("Lighting")
-local originalSettings = {
-    Brightness = Lighting.Brightness,
-    ClockTime = Lighting.ClockTime,
-    FogEnd = Lighting.FogEnd,
-    Ambient = Lighting.Ambient,
-}
-
-local toggleInitialized = false
-
-local Toggle = Tab:Toggle({
-    Title = "FullBright",
-    Desc = "Enable or disable FullBright",
-    Icon = "aperture",
-    Type = "Toggle",
-    Value = false, -- default value
-    Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return
-        end
-
-        if state then
-            -- Enable FullBright
-            Lighting.Brightness = 2 -- or higher if you like
-            Lighting.ClockTime = 14 -- daytime
-            Lighting.FogEnd = 100000 -- remove fog
-            Lighting.Ambient = Color3.new(1, 1, 1) -- bright ambient
-
-            WindUI:Notify({
-                Title = "FullBright Enabled",
-                Content = "The game is now fully bright!",
-                Duration = 3,
-                Icon = "slash",
-            })
-        else
-            -- Restore original settings
-            Lighting.Brightness = originalSettings.Brightness
-            Lighting.ClockTime = originalSettings.ClockTime
-            Lighting.FogEnd = originalSettings.FogEnd
-            Lighting.Ambient = originalSettings.Ambient
-
-            WindUI:Notify({
-                Title = "FullBright Disabled",
-                Content = "Lighting has been restored.",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
-local player = game.Players.LocalPlayer
-local camera = workspace.CurrentCamera
-
--- Flags to prevent automatic notification on initialization
-local toggleInitialized = false
-local inputInitialized = false
-
--- Default FOV
-local defaultFOV = camera.FieldOfView
-
--- Toggle to enable/disable custom FOV
-local Toggle = Tab:Toggle({
-    Title = "Custom FOV",
-    Desc = "Enable or disable custom FOV",
-    Icon = "eye",
-    Type = "Toggle",
-    Value = false, -- default value
-    Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return
-        end
-
-        if state then
-            WindUI:Notify({
-                Title = "Custom FOV Enabled",
-                Content = "You can now set a custom FOV!",
-                Duration = 3,
-                Icon = "slash",
-            })
-            -- Apply current input value
-            local fovValue = tonumber(Input.Value) or defaultFOV
-            camera.FieldOfView = fovValue
-        else
-            camera.FieldOfView = defaultFOV
-            WindUI:Notify({
-                Title = "Custom FOV Disabled",
-                Content = "FOV has been reset to default ("..defaultFOV..")",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
--- Input to set FOV value
-local Input = Tab:Input({
-    Title = "FOV Value",
-    Desc = "Enter a number to set camera FOV",
-    Value = tostring(defaultFOV), -- default value
-    InputIcon = "chevrons-left-right-ellipsis",
-    Type = "Input",
-    Placeholder = "Enter FOV...",
-    Callback = function(input)
-        if not inputInitialized then
-            inputInitialized = true
-            return
-        end
-
-        local fov = tonumber(input)
-        if fov then
-            if Toggle.Value then
-                camera.FieldOfView = fov
-                WindUI:Notify({
-                    Title = "FOV Updated",
-                    Content = "Camera FOV is now "..fov,
-                    Duration = 3,
-                    Icon = "slash",
-                })
-            else
-                WindUI:Notify({
-                    Title = "Toggle Off",
-                    Content = "Enable the custom FOV toggle first!",
-                    Duration = 3,
-                    Icon = "slash",
-                })
-            end
-        else
-            WindUI:Notify({
-                Title = "Invalid Input",
-                Content = "Please enter a valid number for FOV.",
-                Duration = 3,
-                Icon = "slash",
-            })
-        end
-    end
-})
-
-local Section = Tab:Section({ 
-    Title = "ESP",
-})
-
-local player = game.Players.LocalPlayer
-local RunService = game:GetService("RunService")
-local espEnabled = false
-local espColor = Color3.fromRGB(0, 255, 0)
-local outlines = {}
-local toggleInitialized = false
-
--- Function to create an ESP outline
-local function createESP(character)
-    local hrp = character:WaitForChild("HumanoidRootPart", 5)
-    if not hrp then return end
-
-    local adorn = Instance.new("BoxHandleAdornment")
-    adorn.Name = "ESPOutline"
-    adorn.Adornee = hrp
-    adorn.AlwaysOnTop = true
-    adorn.ZIndex = 10
-    adorn.Size = Vector3.new(2, 5, 1)
-    adorn.Transparency = 0
-    adorn.Color = espColor
-    adorn.Parent = workspace -- Must be parented to Workspace
-    table.insert(outlines, adorn)
+local names = {}
+for _, plr in ipairs(Players:GetPlayers()) do
+    table.insert(names, plr.Name)
 end
 
--- Remove all ESP outlines
-local function clearESP()
-    for _, adorn in pairs(outlines) do
-        if adorn and adorn.Parent then
-            adorn:Destroy()
-        end
-    end
-    outlines = {}
-end
-
--- Update ESP for all players
-local function updateESP()
-    clearESP()
-    if espEnabled then
-        for _, plr in pairs(game.Players:GetPlayers()) do
-            if plr ~= player and plr.Character then
-                createESP(plr.Character)
-                plr.CharacterAdded:Connect(function(char)
-                    if espEnabled then
-                        createESP(char)
-                    end
-                end)
-            end
-        end
-    end
-end
-
--- Toggle for ESP
-local Toggle = Tab:Toggle({
-    Title = "ESP Outline",
-    Desc = "Enable/Disable ESP Outline",
-    Icon = "power",
-    Type = "Checkbox",
-    Value = false,
-    Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return -- Ignore first automatic call
-        end
-
-        espEnabled = state
-        updateESP()
-
-        WindUI:Notify({
-            Title = espEnabled and "ESP Enabled" or "ESP Disabled",
-            Content = espEnabled and "ESP outlines are now active!" or "ESP has been turned off.",
-            Duration = 3,
-            Icon = "slash",
-        })
-    end
-})
-
--- Colorpicker for ESP
-local Colorpicker = Tab:Colorpicker({
-    Title = "ESP Color",
-    Desc = "Choose outline color",
-    Default = espColor,
-    Transparency = 0,
-    Locked = false,
-    Callback = function(color)
-        espColor = color
-        if espEnabled then
-            updateESP()
-        end
-    end
-})
-
--- Keep ESP updated for new players joining
-game.Players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function(char)
-        if espEnabled then
-            createESP(char)
-        end
-    end)
-end)
-
-local Tab = Window:Tab({
-    Title = "Server info",
-    Icon = "server", -- optional
-    Locked = false,
-})
-
--- Create Paragraph
 local Paragraph = Tab:Paragraph({
-    Title = "Players Info", -- initial title
-    Desc = "Loading...",    -- initial description
-    Color = "Red",
-    Image = "",             -- optional image URL
-    ImageSize = 30,
-    Thumbnail = "",         -- optional thumbnail URL
-    ThumbnailSize = 80,
-    Locked = false,
-})
-
--- Function to update the Paragraph dynamically
-local function updateParagraph()
-    -- Example: player count
-    local playerCount = #game.Players:GetPlayers()
-
-    -- Example: player usernames
-    local usernames = {}
-    for _, plr in pairs(game.Players:GetPlayers()) do
-        table.insert(usernames, plr.Name)
-    end
-    local usernameText = table.concat(usernames, ", ")
-
-    -- Update the Paragraph
-    Paragraph:SetTitle("Players: " .. playerCount)
-    Paragraph:SetDesc("Usernames: " .. usernameText)
-end
-
--- Initial update
-updateParagraph()
-
--- Optional: Update when players join or leave
-game.Players.PlayerAdded:Connect(updateParagraph)
-game.Players.PlayerRemoving:Connect(updateParagraph)
-
-local RunService = game:GetService("RunService")
-local MarketplaceService = game:GetService("MarketplaceService")
-local player = game.Players.LocalPlayer
-
--- Create Paragraph
-local Paragraph = Tab:Paragraph({
-    Title = "Server Info",
-    Desc = "Loading server details...",
+    Title = "Players: " .. playerCount,
+    Desc = "Online Players:\n" .. table.concat(names, ", "),
     Color = "Red",
     Image = "",
     ImageSize = 30,
@@ -599,317 +67,611 @@ local Paragraph = Tab:Paragraph({
     Locked = false,
 })
 
--- Function to update the Paragraph with server info and ping
-local function updateServerParagraph()
-    local success, region = pcall(function()
-        return MarketplaceService:GetPlayerRegionAsync(player.UserId)
-    end)
-    if not success then region = "Unknown" end
+local function UpdateParagraph()
+    local playerCount = #Players:GetPlayers()
 
-    local gameId = game.GameId
-    local jobId = game.JobId
-    local ping = math.floor(player:GetNetworkPing() * 1000) -- convert to ms
-
-    -- Update Paragraph
-    Paragraph:SetTitle("Server Information")
-    Paragraph:SetDesc(
-        "Region: " .. region .. "\n" ..
-        "Game ID: " .. gameId .. "\n" ..
-        "Job ID: " .. jobId .. "\n" ..
-        "Ping: " .. ping .. " ms"
-    )
-end
-
--- Initial update
-updateServerParagraph()
-
--- Auto-update every 5 seconds
-spawn(function()
-    while true do
-        updateServerParagraph()
-        wait(0) -- update every 5 seconds
-    end
-end)
-
-local function copyToClipboard(text, title)
-    if setclipboard then
-        setclipboard(text)
-        WindUI:Notify({
-            Title = "Copied!",
-            Content = title .. " has been copied: " .. text,
-            Duration = 3,
-            Icon = "slash",
-        })
-    else
-        WindUI:Notify({
-            Title = "Error",
-            Content = "Clipboard function not supported.",
-            Duration = 3,
-            Icon = "slash",
-        })
-    end
-end
-
--- Copy Job ID
-Tab:Button({
-    Title = "Copy Job ID",
-    Color = Color3.fromHex("#a2ff30"),
-    Justify = "Center",
-    IconAlign = "Left",
-    Icon = "",
-    Callback = function()
-        copyToClipboard(game.JobId, "Job ID")
-    end
-})
-
--- Copy Game ID
-Tab:Button({
-    Title = "Copy Game ID",
-    Color = Color3.fromHex("#30d1ff"),
-    Justify = "Center",
-    IconAlign = "Left",
-    Icon = "",
-    Callback = function()
-        copyToClipboard(game.GameId, "Game ID")
-    end
-})
-
--- Copy Place ID
-Tab:Button({
-    Title = "Copy Place ID",
-    Color = Color3.fromHex("#ff6a30"),
-    Justify = "Center",
-    IconAlign = "Left",
-    Icon = "",
-    Callback = function()
-        copyToClipboard(game.PlaceId, "Place ID")
-    end
-})
-
--- Copy Full Server Info
-Tab:Button({
-    Title = "Copy Server Info",
-    Color = Color3.fromHex("#ff30d5"),
-    Justify = "Center",
-    IconAlign = "Left",
-    Icon = "",
-    Callback = function()
-        local info = string.format(
-            "Region: %s | Job ID: %s | Game ID: %s | Place ID: %s",
-            (pcall(function() return game:GetService("MarketplaceService"):GetPlayerRegionAsync(game.Players.LocalPlayer.UserId) end) and 
-                game:GetService("MarketplaceService"):GetPlayerRegionAsync(game.Players.LocalPlayer.UserId)) or "Unknown",
-            game.JobId,
-            game.GameId,
-            game.PlaceId
-        )
-        copyToClipboard(info, "Server Info")
-    end
-})
-
-local player = game.Players.LocalPlayer
-
--- Function to copy text safely with notification
-local function copyToClipboard(text, title)
-    if setclipboard then
-        setclipboard(text)
-        WindUI:Notify({
-            Title = "Copied!",
-            Content = title .. " has been copied: " .. text,
-            Duration = 3,
-            Icon = "slash",
-        })
-    else
-        WindUI:Notify({
-            Title = "Error",
-            Content = "Clipboard function not supported.",
-            Duration = 3,
-            Icon = "slash",
-        })
-    end
-end
-
--- Button: Copy all player names
-local Button = Tab:Button({
-    Title = "Copy All Player Names",
-    Color = Color3.fromHex("#FF748D"),
-    Justify = "Center",
-    IconAlign = "Left",
-    Icon = "",
-    Callback = function()
-        local playerNames = {}
-        for _, plr in pairs(game.Players:GetPlayers()) do
-            table.insert(playerNames, plr.Name)
-        end
-        local text = table.concat(playerNames, ", ")
-        copyToClipboard(text, "All Player Names")
-    end
-})
-
--- Dropdown: List of players
-local Dropdown = Tab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to copy their name",
-    Values = {}, -- empty initially
-    Value = "",  -- empty default
-    Callback = function(selectedPlayer)
-        copyToClipboard(selectedPlayer, "Player Name")
-    end
-})
-
--- Function to refresh dropdown manually
-local function refreshPlayerDropdown()
     local names = {}
-    for _, plr in pairs(game.Players:GetPlayers()) do
+    for _, plr in ipairs(Players:GetPlayers()) do
         table.insert(names, plr.Name)
     end
-    Dropdown:Refresh(names) -- manually refresh dropdown with new player list
+
+    Paragraph:SetTitle("Players: " .. playerCount)
+    Paragraph:SetDesc("Online Players:\n" .. table.concat(names, ", "))
 end
 
--- Initial refresh
-refreshPlayerDropdown()
+Players.PlayerAdded:Connect(UpdateParagraph)
+Players.PlayerRemoving:Connect(UpdateParagraph)
 
--- Refresh whenever a player joins or leaves
-game.Players.PlayerAdded:Connect(refreshPlayerDropdown)
-game.Players.PlayerRemoving:Connect(refreshPlayerDropdown)
+UpdateParagraph()
 
-local Tab = Window:Tab({
-    Title = "Settings",
-    Icon = "cog", -- optional
+local Players = game:GetService("Players")
+local LocalizationService = game:GetService("LocalizationService")
+
+-- Get basic server info
+local gameId = game.PlaceId
+local gameName = game:GetService("MarketplaceService"):GetProductInfo(gameId).Name
+local jobId = game.JobId
+
+-- Roblox doesn't provide server region directly
+-- but we can use the game’s LocalizationService to guess the server country
+local success, result = pcall(function()
+    return LocalizationService:GetCountryRegionForPlayerAsync(Players.LocalPlayer)
+end)
+
+local region = success and result or "Unknown"
+
+-- Create Paragraph
+local Paragraph = Tab:Paragraph({
+    Title = "Server Info",
+    Desc = "Loading...",
+    Color = "Red",
+    Image = "",
+    ImageSize = 30,
+    Thumbnail = "",
+    ThumbnailSize = 80,
     Locked = false,
 })
 
-local player = game.Players.LocalPlayer
+-- Update function
+local function UpdateServerInfo()
+    Paragraph:SetTitle("Server Information")
+    Paragraph:SetDesc("Region: " .. tostring(region)
+        .. "\nGame ID: " .. gameId
+        .. "\nGame Name: " .. gameName
+        .. "\nJob ID: " .. jobId
+    )
+end
+
+UpdateServerInfo()
+
+--// Services
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local antiFlingEnabled = false
-local toggleInitialized = false
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+--// === TOGGLE ===
+
+local spectating = false
+local spectateTarget = nil
 
 local Toggle = Tab:Toggle({
-    Title = "Anti-Fling",
-    Desc = "Prevents other players from forcibly moving you",
-    Icon = "shield",
-    Type = "Toggle",
+    Title = "Spectate Player",
+    Desc = "Toggle to view another player",
+    Icon = "bird",
+    Type = "Checkbox",
     Value = false,
     Callback = function(state)
-        if not toggleInitialized then
-            toggleInitialized = true
-            return -- ignore first automatic callback
+        spectating = state
+
+        if not state then
+            spectateTarget = nil
+            Camera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
         end
-
-        antiFlingEnabled = state
-
-        WindUI:Notify({
-            Title = antiFlingEnabled and "Anti-Fling Enabled" or "Anti-Fling Disabled",
-            Content = antiFlingEnabled and "You are now protected from flings!" or "Anti-Fling turned off.",
-            Duration = 3,
-            Icon = "slash",
-        })
     end
 })
 
--- Keep character protected if anti-fling is enabled
-RunService.Stepped:Connect(function()
-    if antiFlingEnabled and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = player.Character.HumanoidRootPart
-        hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-        hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+
+--// === DROPDOWN ===
+
+-- Function to get player list
+local function GetPlayerList()
+    local list = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        table.insert(list, plr.Name)
+    end
+    return list
+end
+
+local Dropdown = Tab:Dropdown({
+    Title = "Choose Player",
+    Desc = "Choose someone to spectate",
+    Values = GetPlayerList(),
+    Value = LocalPlayer.Name,
+    Callback = function(name)
+        local target = Players:FindFirstChild(name)
+        if target and target.Character then
+            spectateTarget = target
+        else
+            spectateTarget = nil
+        end
+    end
+})
+
+-- Auto refresh dropdown when players join or leave
+local function RefreshDropdown()
+    Dropdown:Refresh(GetPlayerList())
+end
+
+Players.PlayerAdded:Connect(RefreshDropdown)
+Players.PlayerRemoving:Connect(RefreshDropdown)
+
+--// === CAMERA LOOP ===
+
+RunService.RenderStepped:Connect(function()
+    if spectating and spectateTarget and spectateTarget.Character then
+        local humanoid = spectateTarget.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            Camera.CameraSubject = humanoid
+        end
     end
 end)
 
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
+Window:Divider()
+
+local Tab = Window:Tab({
+    Title = "Player",
+    Icon = "bird", -- optional
+    Locked = false,
+})
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Variables for dropdown and VIP Job ID
-local selectedAction = "None"
-local vipJobId = ""
+-- default walkspeed value
+local SpeedValue = 16
+local SpeedEnabled = false
 
--- Function to copy text safely with notification
-local function sendNotification(title, content)
-    WindUI:Notify({
-        Title = title,
-        Content = content,
-        Duration = 3,
-        Icon = "slash",
-    })
-end
 
--- Automatic notification on join
-sendNotification("Welcome!", "You have joined the game! Current Action: "..selectedAction..(vipJobId ~= "" and "\nVIP Job ID: "..vipJobId or ""))
+-- // TOGGLE
+local Toggle = Tab:Toggle({
+    Title = "Toggle WalkSpeed",
+    Desc = "Enable or disable custom speed",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        SpeedEnabled = state
 
--- Function: Rejoin current server
-local function rejoinServer()
-    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
-end
-
--- Function: Server hop
-local function serverHop()
-    local success, servers = pcall(function()
-        local response = game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")
-        return HttpService:JSONDecode(response)
-    end)
-
-    if success and servers and servers.data then
-        for _, server in pairs(servers.data) do
-            if server.playing < server.maxPlayers and server.id ~= game.JobId then
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, server.id, LocalPlayer)
-                return
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = state and SpeedValue or 16
             end
         end
     end
+})
 
-    sendNotification("Server Hop", "No available servers found!")
-end
 
--- Function: Join VIP server
-local function joinVIPServer()
-    if vipJobId ~= "" then
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, vipJobId, LocalPlayer)
-    else
-        sendNotification("VIP Server", "Please enter a VIP Job ID first!")
-    end
-end
-
--- Input: VIP Job ID
+-- // INPUT
 local Input = Tab:Input({
-    Title = "VIP Job ID",
-    Desc = "Enter the Job ID of the VIP server",
-    Value = "",
-    InputIcon = "chevrons-left-right-ellipsis",
+    Title = "Set WalkSpeed",
+    Desc = "Type the speed you want",
+    Value = "16",
+    InputIcon = "bird",
     Type = "Input",
-    Placeholder = "Enter Job ID here...",
+    Placeholder = "Enter WalkSpeed...",
     Callback = function(input)
-        vipJobId = input
-        sendNotification("VIP Job ID Set", "VIP server Job ID updated to: "..input)
+        local num = tonumber(input)
+        if num then
+            SpeedValue = num
+
+            if SpeedEnabled then
+                local character = LocalPlayer.Character
+                if character then
+                    local humanoid = character:FindFirstChild("Humanoid")
+                    if humanoid then
+                        humanoid.WalkSpeed = SpeedValue
+                    end
+                end
+            end
+        end
     end
 })
 
--- Dropdown: Select action
-local Dropdown = Tab:Dropdown({
-    Title = "Select Action",
-    Desc = "Choose what the button will do",
-    Values = { "Rejoin", "Server Hop", "Join VIP" },
-    Value = selectedAction,
-    Callback = function(option)
-        selectedAction = option
-        sendNotification("Action Selected", "Button will now perform: "..option)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Default jump power value
+local JumpValue = 50
+local JumpEnabled = false
+
+
+-- // TOGGLE
+local Toggle = Tab:Toggle({
+    Title = "Toggle JumpPower",
+    Desc = "Enable or disable custom JumpPower",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        JumpEnabled = state
+
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.JumpPower = state and JumpValue or 50 -- Roblox default = 50
+            end
+        end
     end
 })
 
--- Button: Execute selected action
-local Button = Tab:Button({
-    Title = "Execute Action",
-    Color = Color3.fromHex("#a2ff30"),
-    Justify = "Center",
-    IconAlign = "Left",
-    Icon = "",
-    Callback = function()
-        if selectedAction == "Rejoin" then
-            rejoinServer()
-        elseif selectedAction == "Server Hop" then
-            serverHop()
-        elseif selectedAction == "Join VIP" then
-            joinVIPServer()
+
+-- // INPUT
+local Input = Tab:Input({
+    Title = "Set JumpPower",
+    Desc = "Type the jump height you want",
+    Value = "50",
+    InputIcon = "bird",
+    Type = "Input",
+    Placeholder = "Enter JumpPower...",
+    Callback = function(input)
+        local num = tonumber(input)
+        if num then
+            JumpValue = num
+
+            if JumpEnabled then
+                local character = LocalPlayer.Character
+                if character then
+                    local humanoid = character:FindFirstChild("Humanoid")
+                    if humanoid then
+                        humanoid.JumpPower = JumpValue
+                    end
+                end
+            end
+        end
+    end
+})
+
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+local infJumpEnabled = false
+
+local Toggle = Tab:Toggle({
+    Title = "Infinite Jump",
+    Desc = "Toggle Infinite Jump On/Off",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        infJumpEnabled = state
+    end
+})
+
+-- Infinite jump handler
+UserInputService.JumpRequest:Connect(function()
+    if infJumpEnabled then
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end
+end)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+local noclipEnabled = false
+
+-- // TOGGLE
+local Toggle = Tab:Toggle({
+    Title = "NoClip",
+    Desc = "Walk through walls (your game only)",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        noclipEnabled = state
+    end
+})
+
+-- // Noclip loop
+RunService.Stepped:Connect(function()
+    if noclipEnabled then
+        local character = LocalPlayer.Character
+        if character then
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    else
+        local character = LocalPlayer.Character
+        if character then
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end
+end)
+
+local bhopRunning = false
+
+local Toggle = Tab:Toggle({
+    Title = "Bunny hop",
+    Desc = "Automatically jump",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        bhopRunning = state
+
+        -- Start or stop bunny hop loop
+        task.spawn(function()
+            while bhopRunning do
+                local player = game.Players.LocalPlayer
+                local char = player.Character
+                local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+
+                if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+                    humanoid.Jump = true
+                end
+
+                task.wait(0.1) -- adjust speed of hopping
+            end
+        end)
+    end
+})
+
+local Tab = Window:Tab({
+    Title = "Visual",
+    Icon = "bird", -- optional
+    Locked = false,
+})
+
+local Section = Tab:Section({ 
+    Title = "World",
+})
+
+local Toggle = Tab:Toggle({
+    Title = "Toggle",
+    Desc = "Toggle Description",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        local lighting = game:GetService("Lighting")
+
+        if state then
+            -- ENABLE FULL BRIGHT
+            lighting.Ambient = Color3.new(1, 1, 1)
+            lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+            lighting.Brightness = 5
+            lighting.ClockTime = 12 -- makes it daytime
+
+        else
+            -- DISABLE / RESET TO DEFAULTS
+            lighting.Ambient = Color3.new(0, 0, 0)
+            lighting.OutdoorAmbient = Color3.new(0, 0, 0)
+            lighting.Brightness = 2
+            lighting.ClockTime = 14
+        end
+    end
+})
+
+local camera = workspace.CurrentCamera
+local customFOV = camera.FieldOfView  -- default
+
+local Toggle = Tab:Toggle({
+    Title = "FOV Toggle",
+    Desc = "Enable / Disable Custom FOV",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        if state then
+            -- ENABLE custom FOV
+            camera.FieldOfView = customFOV
+        else
+            -- DISABLE = reset FOV to Roblox default (70)
+            camera.FieldOfView = 70
+        end
+    end
+})
+
+local Input = Tab:Input({
+    Title = "FOV Input",
+    Desc = "Set your FOV number",
+    Value = "",
+    InputIcon = "bird",
+    Type = "Input",
+    Placeholder = "Enter FOV...",
+    Callback = function(input)
+        local number = tonumber(input)
+
+        if not number then
+            warn("Invalid FOV: must be a number")
+            return
+        end
+
+        -- clamp so it doesn’t break camera
+        number = math.clamp(number, 30, 120)
+
+        customFOV = number
+        print("Updated FOV to:", customFOV)
+
+        -- If toggle is ON, apply instantly
+        if Toggle.Value then
+            camera.FieldOfView = customFOV
+        end
+    end
+})
+
+local Section = Tab:Section({ 
+    Title = "ESP",
+})
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local espEnabled = false
+local espColor = Color3.fromRGB(0, 255, 0)
+local espObjects = {} -- store highlights
+
+local function applyESP(player)
+    if not player.Character then return end
+    if player == LocalPlayer then return end -- don't outline yourself
+
+    local char = player.Character
+    if not char:FindFirstChild("ESP_Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "ESP_Highlight"
+        highlight.FillTransparency = 1
+        highlight.OutlineTransparency = 0
+        highlight.OutlineColor = espColor
+        highlight.Parent = char
+
+        espObjects[player] = highlight
+    end
+end
+
+local function removeESP(player)
+    local highlight = espObjects[player]
+    if highlight then
+        highlight:Destroy()
+        espObjects[player] = nil
+    end
+end
+
+local Toggle = Tab:Toggle({
+    Title = "Toggle",
+    Desc = "Toggle Description",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        espEnabled = state
+
+        if state then
+            -- APPLY ESP to all players
+            for _, player in pairs(Players:GetPlayers()) do
+                applyESP(player)
+            end
+
+            -- APPLY ESP to players who respawn later
+            Players.PlayerAdded:Connect(function(player)
+                player.CharacterAdded:Connect(function()
+                    if espEnabled then
+                        applyESP(player)
+                    end
+                end)
+            end)
+
+        else
+            -- REMOVE all ESP
+            for _, player in pairs(Players:GetPlayers()) do
+                removeESP(player)
+            end
+        end
+    end
+})
+
+local Colorpicker = Tab:Colorpicker({
+    Title = "Colorpicker",
+    Desc = "Colorpicker Description",
+    Default = Color3.fromRGB(0, 255, 0),
+    Transparency = 0,
+    Locked = false,
+    Callback = function(color)
+        espColor = color
+
+        -- update existing ESP highlights
+        for _, highlight in pairs(espObjects) do
+            highlight.OutlineColor = espColor
+        end
+    end
+})
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local boxESPEnabled = false
+local boxColor = Color3.fromRGB(0, 255, 0)
+
+local espBoxes = {} -- store all player boxes
+
+local function createBoxESP(player)
+    if player == LocalPlayer then return end
+    if not player.Character then return end
+
+    local char = player.Character
+    if not char:FindFirstChild("HumanoidRootPart") then return end
+
+    -- prevent duplicates
+    if espBoxes[player] then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "BoxESP"
+    billboard.Adornee = char:WaitForChild("HumanoidRootPart")
+    billboard.Size = UDim2.new(4, 0, 6, 0) -- width / height of box
+    billboard.AlwaysOnTop = true
+    billboard.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundTransparency = 1
+    frame.BorderSizePixel = 2
+    frame.BorderColor3 = boxColor
+    frame.Parent = billboard
+
+    billboard.Parent = char
+    espBoxes[player] = billboard
+end
+
+local function removeBoxESP(player)
+    if espBoxes[player] then
+        espBoxes[player]:Destroy()
+        espBoxes[player] = nil
+    end
+end
+
+local Toggle = Tab:Toggle({
+    Title = "Box ESP",
+    Desc = "Shows 2D boxes on players",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        boxESPEnabled = state
+
+        if state then
+            -- apply ESP to all players
+            for _, player in pairs(Players:GetPlayers()) do
+                createBoxESP(player)
+            end
+
+            -- apply ESP to new players
+            Players.PlayerAdded:Connect(function(player)
+                player.CharacterAdded:Connect(function()
+                    if boxESPEnabled then
+                        createBoxESP(player)
+                    end
+                end)
+            end)
+        else
+            -- remove all
+            for _, player in pairs(Players:GetPlayers()) do
+                removeBoxESP(player)
+            end
+        end
+    end
+})
+
+local Colorpicker = Tab:Colorpicker({
+    Title = "Box Color",
+    Desc = "Pick ESP outline color",
+    Default = Color3.fromRGB(0, 255, 0),
+    Transparency = 0,
+    Callback = function(color)
+        boxColor = color
+
+        -- update all active boxes
+        for _, billboard in pairs(espBoxes) do
+            local frame = billboard:FindFirstChildOfClass("Frame")
+            if frame then
+                frame.BorderColor3 = color
+            end
         end
     end
 })
