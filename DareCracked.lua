@@ -26,7 +26,7 @@ local Localization = WindUI:Localization({
     Translations = {
         ["en"] = {
             ["SCRIPT_TITLE"] = "千尺ㄖ丂ㄒ",
-            ["WELCOME"] = "Made by: 千尺ㄖ丂ㄒ",
+            ["WELCOME"] = "Cracked",
             ["FEATURES"] = "Features",
             ["Player_TAB"] = "Player",
             ["AUTO_TAB"] = "Auto",
@@ -78,9 +78,9 @@ WindUI:SetTheme("Dark")
 -- Create WindUI window
 local Window = WindUI:CreateWindow({
     Title = "loc:SCRIPT_TITLE",
-    Icon = "rbxassetid://137330250139083",
+    Icon = "rbxassetid://70763410506210",
     Author = "loc:WELCOME",
-    Folder = "DaraHub",
+    Folder = "Frost",
     Size = UDim2.fromOffset(580, 490),
     Theme = "Dark",
     HidePanelBackground = false,
@@ -111,7 +111,7 @@ if featureStates.DisableCameraShake == nil then
 end
 Window:SetIconSize(48)
 Window:Tag({
-    Title = "v1.3.3",
+    Title = "v1.3.5",
     Color = Color3.fromHex("#30ff6a")
 })
 
