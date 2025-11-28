@@ -344,6 +344,56 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
+--// SETTINGS
+local tpWalkEnabled = false
+local tpWalkSpeed = 5 -- default speed
+
+--// TP WALK FUNCTION (simple step teleport)
+task.spawn(function()
+    while task.wait() do
+        if tpWalkEnabled then
+            local char = game.Players.LocalPlayer.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+
+            if hrp and hum and hum.MoveDirection.Magnitude > 0 then
+                -- Teleport a small distance forward
+                hrp.CFrame = hrp.CFrame + (hum.MoveDirection * tpWalkSpeed)
+            end
+        end
+    end
+end)
+
+-------------------------------------------------------
+--// TOGGLE
+local Toggle = Tab:Toggle({
+    Title = "TP Walk",
+    Desc = "Enable teleport walk",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state)
+        tpWalkEnabled = state
+    end
+})
+
+-------------------------------------------------------
+--// INPUT
+local Input = Tab:Input({
+    Title = "TP Speed",
+    Desc = "Set teleport walk speed",
+    Value = "5",
+    InputIcon = "bird",
+    Type = "Input",
+    Placeholder = "Enter number...",
+    Callback = function(input)
+        local num = tonumber(input)
+        if num then
+            tpWalkSpeed = num
+        end
+    end
+})
+
 local Tab = Window:Tab({
     Title = "Visual",
     Icon = "bird", -- optional
