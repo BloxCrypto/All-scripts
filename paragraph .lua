@@ -33,7 +33,13 @@ If you have suggestions or found bugs, please report them to <font color="rgb(0,
         ButtonCallback = function()
             if setclipboard then
                 setclipboard("https://discord.gg/fUNMX29UAJ")
-                print("Succesfully copied link!")
+                local Notify = FlurioreLib:MakeNotify({
+    ["Title"] = "Fluriore UI",
+    ["Description"] = "Notification",
+    ["Color"] = Color3.fromRGB(255, 0, 255),
+    ["Content"] = "Welcome to Fluriore UI",
+    ["Time"] = 1,
+    ["Delay"] = 10
             end
         end
     })
