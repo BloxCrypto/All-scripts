@@ -26,14 +26,14 @@ If you have suggestions or found bugs, please report them to <font color="rgb(0,
     })
 
     InfoSection:AddParagraph({
-        Title = "CHLOE X Discord",
-        Content = "Official link discord Chloe X!",
+        Title = "Blueflare Discord",
+        Content = "Official link discord Blueflare!",
         Icon = "discord",
         ButtonText = "COPY LINK DISCORD",
         ButtonCallback = function()
             if setclipboard then
                 setclipboard("https://discord.gg/fUNMX29UAJ")
-                chloex("Succesfully copied link!")
+                print("Succesfully copied link!")
             end
         end
     })
