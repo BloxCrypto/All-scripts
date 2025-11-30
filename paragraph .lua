@@ -33,7 +33,7 @@ If you have suggestions or found bugs, please report them to <font color="rgb(0,
         ButtonCallback = function()
             if setclipboard then
                 setclipboard("https://discord.gg/fUNMX29UAJ")
-                chloex("Succesfully copied link!")
+                print("Succesfully copied link!")
             end
         end
     })
