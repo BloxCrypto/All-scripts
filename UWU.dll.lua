@@ -5431,7 +5431,7 @@ module:create_slider({
     callback = WalkableSemiImmortal.setHeight
 })
 
---[[local Invisibilidade = {}
+local Invisibilidade = {}
 
 local Players = game:GetService('Players')
 local RunService = game:GetService('RunService')
