@@ -180,6 +180,140 @@ function UILib:CreateWindow(title)
 			function Section:AddButton(text, callback)
 				local btn = Instance.new("TextButton")
 				btn.Size = UDim2.new(1, -16, 0, 32)
+				btn.BackgroundColor3 = Theme.TopBar
+				btn.Text = text
+				btn.TextColor3 = Theme.Text
+				btn.Font = Enum.Font.Gotham
+				btn.TextSize = 12
+				btn.AutoButtonColor = false
+				btn.Parent = section
+				Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+
+				btn.MouseButton1Click:Connect(function()
+					task.spawn(function()
+						if callback then callback() end
+					end)
+				end)
+			end
+
+			function Section:AddToggle(text, default, callback)
+				local state = default or false
+				local toggle = Instance.new("TextButton")
+				toggle.Size = UDim2.new(1, -16, 0, 32)
+				toggle.BackgroundColor3 = state and Theme.Accent or Theme.TopBar
+				toggle.Text = text
+				toggle.TextColor3 = Theme.Text
+				toggle.Font = Enum.Font.Gotham
+				toggle.TextSize = 12
+				toggle.AutoButtonColor = false
+				toggle.Parent = section
+				Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 6)
+
+				toggle.MouseButton1Click:Connect(function()
+					state = not state
+					toggle.BackgroundColor3 = state and Theme.Accent or Theme.TopBar
+					if callback then callback(state) end
+				end)
+			end
+
+			function Section:AddSlider(text, min, max, default, callback)
+				local value = default or min
+				local frame = Instance.new("Frame")
+				frame.Size = UDim2.new(1, -16, 0, 44)
+				frame.BackgroundColor3 = Theme.TopBar
+				frame.Parent = section
+				Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+
+				local label = Instance.new("TextLabel")
+				label.Size = UDim2.new(1, -16, 0, 18)
+				label.Position = UDim2.fromOffset(8, 4)
+				label.BackgroundTransparency = 1
+				label.Text = text .. ": " .. value
+				label.TextColor3 = Theme.Text
+				label.Font = Enum.Font.Gotham
+				label.TextSize = 12
+				label.TextXAlignment = Enum.TextXAlignment.Left
+				label.Parent = frame
+
+				local bar = Instance.new("Frame")
+				bar.Size = UDim2.new(1, -16, 0, 6)
+				bar.Position = UDim2.fromOffset(8, 28)
+				bar.BackgroundColor3 = Color3.fromRGB(60,60,60)
+				bar.Parent = frame
+				Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
+
+				local fill = Instance.new("Frame")
+				fill.Size = UDim2.new((value-min)/(max-min), 0, 1, 0)
+				fill.BackgroundColor3 = Theme.Accent
+				fill.Parent = bar
+				Instance.new("UICorner", fill).CornerRadius = UDim.new(1,0)
+
+				local dragging = false
+				bar.InputBegan:Connect(function(i)
+					if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true end
+				end)
+				UserInputService.InputEnded:Connect(function(i)
+					if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+				end)
+				UserInputService.InputChanged:Connect(function(i)
+					if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
+						local pct = math.clamp((i.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+						value = math.floor(min + (max-min)*pct)
+						fill.Size = UDim2.new(pct,0,1,0)
+						label.Text = text .. ": " .. value
+						if callback then callback(value) end
+					end
+				end)
+			end
+
+			function Section:AddDropdown(text, options, callback)
+				local open = false
+				local drop = Instance.new("TextButton")
+				drop.Size = UDim2.new(1, -16, 0, 32)
+				drop.BackgroundColor3 = Theme.TopBar
+				drop.Text = text
+				drop.TextColor3 = Theme.Text
+				drop.Font = Enum.Font.Gotham
+				drop.TextSize = 12
+				drop.AutoButtonColor = false
+				drop.Parent = section
+				Instance.new("UICorner", drop).CornerRadius = UDim.new(0, 6)
+
+				local list = Instance.new("Frame")
+				list.Size = UDim2.new(1, -16, 0, 0)
+				list.BackgroundColor3 = Theme.Section
+				list.Visible = false
+				list.Parent = section
+				Instance.new("UICorner", list).CornerRadius = UDim.new(0, 6)
+
+				local layout = Instance.new("UIListLayout", list)
+				layout.Padding = UDim.new(0, 4)
+
+				for _,opt in ipairs(options) do
+					local o = Instance.new("TextButton")
+					o.Size = UDim2.new(1, -8, 0, 28)
+					o.BackgroundColor3 = Theme.TopBar
+					o.Text = opt
+					o.TextColor3 = Theme.Text
+					o.Font = Enum.Font.Gotham
+					o.TextSize = 12
+					o.AutoButtonColor = false
+					o.Parent = list
+					Instance.new("UICorner", o).CornerRadius = UDim.new(0, 6)
+					o.MouseButton1Click:Connect(function()
+						drop.Text = text .. ": " .. opt
+						list.Visible = false
+						if callback then callback(opt) end
+					end)
+				end
+
+				drop.MouseButton1Click:Connect(function()
+					open = not open
+					list.Visible = open
+				end)
+			end(text, callback)
+				local btn = Instance.new("TextButton")
+				btn.Size = UDim2.new(1, -16, 0, 32)
 				btn.Position = UDim2.fromOffset(8, section.AbsoluteSize.Y)
 				btn.BackgroundColor3 = Theme.TopBar
 				btn.Text = text
@@ -201,6 +335,40 @@ function UILib:CreateWindow(title)
 		end
 
 		return Tab
+	end
+
+		-- Open / Close controls
+	local isOpen = true
+
+	local function setVisible(state)
+		isOpen = state
+		main.Visible = state
+	end
+
+	-- PC keybind (RightShift)
+	UserInputService.InputBegan:Connect(function(input, gp)
+		if gp then return end
+		if input.KeyCode == Enum.KeyCode.RightShift then
+			setVisible(not isOpen)
+		end
+	end)
+
+	-- Mobile toggle button
+	if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+		local mobileBtn = Instance.new("TextButton")
+		mobileBtn.Size = UDim2.fromOffset(48, 48)
+		mobileBtn.Position = UDim2.new(0, 12, 0.5, -24)
+		mobileBtn.BackgroundColor3 = Theme.Accent
+		mobileBtn.Text = "UI"
+		mobileBtn.TextColor3 = Color3.new(1,1,1)
+		mobileBtn.Font = Enum.Font.GothamBold
+		mobileBtn.TextSize = 14
+		mobileBtn.Parent = gui
+		Instance.new("UICorner", mobileBtn).CornerRadius = UDim.new(1,0)
+
+		mobileBtn.MouseButton1Click:Connect(function()
+			setVisible(not isOpen)
+		end)
 	end
 
 	return Window
