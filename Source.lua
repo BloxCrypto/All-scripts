@@ -71,7 +71,7 @@ function UILib:CreateWindow(title)
 	titleLabel.TextColor3 = Theme.Text
 	titleLabel.Font = Enum.Font.GothamBold
 	titleLabel.TextSize = 14
-	titleLabel.TextXAlignment = Left
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	titleLabel.Parent = top
 
 	-- Dragging (RenderStepped optimized)
@@ -172,7 +172,7 @@ function UILib:CreateWindow(title)
 			label.TextColor3 = Theme.Text
 			label.Font = Enum.Font.GothamBold
 			label.TextSize = 13
-			label.TextXAlignment = Left
+			label.TextXAlignment = Enum.TextXAlignment.Left
 			label.Parent = section
 
 			local Section = {}
@@ -207,3 +207,17 @@ function UILib:CreateWindow(title)
 end
 
 return UILib
+
+--[[
+Executor Example:
+
+local UILib = loadstring(game:HttpGet("your_raw_url"))()
+local win = UILib:CreateWindow("Executor Hub")
+
+local tab = win:CreateTab("Main")
+local sec = tab:CreateSection("Actions")
+
+sec:AddButton("Print", function()
+	print("Executed")
+end)
+]]
