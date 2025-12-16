@@ -1,6 +1,8 @@
 -- Executor-Optimized Roblox UI Library (Rayfield / Orion / Fluent style)
 -- Safe for Synapse / Fluxus / KRNL / Script-Ware
 -- No memory leaks, protected GUI, client-only
+if getgenv()._UILoaded then return end
+getgenv()._UILoaded = true
 
 local UILib = {}
 
