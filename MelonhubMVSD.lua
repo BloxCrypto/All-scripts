@@ -1,6 +1,3 @@
--- ts file was generated at discord.gg/25ms
-
-
 if game.GameId == 4348829796 then
     Camera = workspace.CurrentCamera
     ReplicatedStorage = game:GetService("ReplicatedStorage")
