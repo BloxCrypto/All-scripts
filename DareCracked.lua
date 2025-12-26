@@ -111,7 +111,7 @@ if featureStates.DisableCameraShake == nil then
 end
 Window:SetIconSize(48)
 Window:Tag({
-    Title = "v1.3.5",
+    Title = "Release",
     Color = Color3.fromHex("#30ff6a")
 })
 
