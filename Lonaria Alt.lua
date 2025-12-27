@@ -1,13 +1,13 @@
 --// Lonaria UI Library
 --// Loadstring-ready | Executor compatible
---// Returns table correctly
+--// Sliders | Dropdowns | Keybinds
 
 local Lonaria = {}
 Lonaria.__index = Lonaria
 
 -- Services
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
@@ -43,17 +43,14 @@ function Lonaria:CreateWindow(title)
 		BorderSizePixel = 0
 	})
 
-	create("UICorner", {
-		CornerRadius = UDim.new(0, 10),
-		Parent = Main
-	})
+	create("UICorner", { Parent = Main, CornerRadius = UDim.new(0, 10) })
 
-	local Title = create("TextLabel", {
+	create("TextLabel", {
 		Parent = Main,
 		Size = UDim2.fromScale(1, 0.1),
 		BackgroundTransparency = 1,
 		Text = title or "Lonaria",
-		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextColor3 = Color3.new(1,1,1),
 		Font = Enum.Font.GothamBold,
 		TextSize = 18
 	})
@@ -71,36 +68,6 @@ function Lonaria:CreateWindow(title)
 		Padding = UDim.new(0, 6)
 	})
 
-	-- Drag
-	do
-		local dragging, dragStart, startPos
-		Main.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				dragging = true
-				dragStart = input.Position
-				startPos = Main.Position
-			end
-		end)
-
-		Main.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				dragging = false
-			end
-		end)
-
-		game:GetService("UserInputService").InputChanged:Connect(function(input)
-			if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-				local delta = input.Position - dragStart
-				Main.Position = UDim2.new(
-					startPos.X.Scale,
-					startPos.X.Offset + delta.X,
-					startPos.Y.Scale,
-					startPos.Y.Offset + delta.Y
-				)
-			end
-		end)
-	end
-
 	-- Create Tab
 	function Window:CreateTab(name)
 		local Tab = {}
@@ -110,16 +77,13 @@ function Lonaria:CreateWindow(title)
 			Size = UDim2.new(1, -10, 0, 35),
 			BackgroundColor3 = Color3.fromRGB(40, 40, 40),
 			Text = name,
-			TextColor3 = Color3.fromRGB(255, 255, 255),
+			TextColor3 = Color3.new(1,1,1),
 			Font = Enum.Font.Gotham,
 			TextSize = 14,
 			BorderSizePixel = 0
 		})
 
-		create("UICorner", {
-			Parent = TabButton,
-			CornerRadius = UDim.new(0, 6)
-		})
+		create("UICorner", { Parent = TabButton, CornerRadius = UDim.new(0, 6) })
 
 		local Content = create("Frame", {
 			Parent = Main,
@@ -143,30 +107,27 @@ function Lonaria:CreateWindow(title)
 			Content.Visible = true
 		end)
 
-		-- Button
+		-- BUTTON
 		function Tab:AddButton(text, callback)
 			local Btn = create("TextButton", {
 				Parent = Content,
 				Size = UDim2.new(1, -10, 0, 35),
 				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
 				Text = text,
-				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextColor3 = Color3.new(1,1,1),
 				Font = Enum.Font.Gotham,
 				TextSize = 14,
 				BorderSizePixel = 0
 			})
 
-			create("UICorner", {
-				Parent = Btn,
-				CornerRadius = UDim.new(0, 6)
-			})
+			create("UICorner", { Parent = Btn, CornerRadius = UDim.new(0, 6) })
 
 			Btn.MouseButton1Click:Connect(function()
 				if callback then callback() end
 			end)
 		end
 
-		-- Toggle
+		-- TOGGLE
 		function Tab:AddToggle(text, callback)
 			local state = false
 
@@ -175,21 +136,142 @@ function Lonaria:CreateWindow(title)
 				Size = UDim2.new(1, -10, 0, 35),
 				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
 				Text = text .. " : OFF",
-				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextColor3 = Color3.new(1,1,1),
 				Font = Enum.Font.Gotham,
 				TextSize = 14,
 				BorderSizePixel = 0
 			})
 
-			create("UICorner", {
-				Parent = Btn,
-				CornerRadius = UDim.new(0, 6)
-			})
+			create("UICorner", { Parent = Btn, CornerRadius = UDim.new(0, 6) })
 
 			Btn.MouseButton1Click:Connect(function()
 				state = not state
 				Btn.Text = text .. (state and " : ON" or " : OFF")
 				if callback then callback(state) end
+			end)
+		end
+
+		-- SLIDER
+		function Tab:AddSlider(text, min, max, default, callback)
+			local value = default or min
+
+			local Holder = create("Frame", {
+				Parent = Content,
+				Size = UDim2.new(1, -10, 0, 50),
+				BackgroundTransparency = 1
+			})
+
+			local Label = create("TextLabel", {
+				Parent = Holder,
+				Size = UDim2.new(1, 0, 0.4, 0),
+				BackgroundTransparency = 1,
+				Text = text .. ": " .. value,
+				TextColor3 = Color3.new(1,1,1),
+				Font = Enum.Font.Gotham,
+				TextSize = 14,
+				TextXAlignment = Left
+			})
+
+			local Bar = create("Frame", {
+				Parent = Holder,
+				Position = UDim2.new(0, 0, 0.6, 0),
+				Size = UDim2.new(1, 0, 0.25, 0),
+				BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+				BorderSizePixel = 0
+			})
+
+			create("UICorner", { Parent = Bar, CornerRadius = UDim.new(1, 0) })
+
+			local Fill = create("Frame", {
+				Parent = Bar,
+				Size = UDim2.new((value-min)/(max-min), 0, 1, 0),
+				BackgroundColor3 = Color3.fromRGB(90, 90, 255),
+				BorderSizePixel = 0
+			})
+
+			create("UICorner", { Parent = Fill, CornerRadius = UDim.new(1, 0) })
+
+			local dragging = false
+
+			Bar.InputBegan:Connect(function(i)
+				if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true end
+			end)
+
+			Bar.InputEnded:Connect(function(i)
+				if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+			end)
+
+			UserInputService.InputChanged:Connect(function(i)
+				if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
+					local pct = math.clamp((i.Position.X - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
+					value = math.floor(min + (max - min) * pct)
+					Fill.Size = UDim2.new(pct, 0, 1, 0)
+					Label.Text = text .. ": " .. value
+					if callback then callback(value) end
+				end
+			end)
+		end
+
+		-- DROPDOWN
+		function Tab:AddDropdown(text, options, callback)
+			local Btn = create("TextButton", {
+				Parent = Content,
+				Size = UDim2.new(1, -10, 0, 35),
+				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
+				Text = text,
+				TextColor3 = Color3.new(1,1,1),
+				Font = Enum.Font.Gotham,
+				TextSize = 14,
+				BorderSizePixel = 0
+			})
+
+			create("UICorner", { Parent = Btn, CornerRadius = UDim.new(0, 6) })
+
+			Btn.MouseButton1Click:Connect(function()
+				for _, option in ipairs(options) do
+					local Opt = create("TextButton", {
+						Parent = Content,
+						Size = UDim2.new(1, -20, 0, 30),
+						BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+						Text = option,
+						TextColor3 = Color3.new(1,1,1),
+						Font = Enum.Font.Gotham,
+						TextSize = 13,
+						BorderSizePixel = 0
+					})
+
+					create("UICorner", { Parent = Opt, CornerRadius = UDim.new(0, 6) })
+
+					Opt.MouseButton1Click:Connect(function()
+						Btn.Text = text .. ": " .. option
+						if callback then callback(option) end
+						Opt:Destroy()
+					end)
+				end
+			end)
+		end
+
+		-- KEYBIND
+		function Tab:AddKeybind(text, defaultKey, callback)
+			local key = defaultKey or Enum.KeyCode.RightShift
+
+			local Btn = create("TextButton", {
+				Parent = Content,
+				Size = UDim2.new(1, -10, 0, 35),
+				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
+				Text = text .. ": " .. key.Name,
+				TextColor3 = Color3.new(1,1,1),
+				Font = Enum.Font.Gotham,
+				TextSize = 14,
+				BorderSizePixel = 0
+			})
+
+			create("UICorner", { Parent = Btn, CornerRadius = UDim.new(0, 6) })
+
+			UserInputService.InputBegan:Connect(function(i, g)
+				if not g and i.KeyCode == key then
+					if callback then callback() end
+				end
 			end)
 		end
 
