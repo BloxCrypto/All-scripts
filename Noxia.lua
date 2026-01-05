@@ -286,77 +286,110 @@ local Tab = Window:Tab({
     Visible = true
 })
 
--- Hitbox Settings
 _G.HeadSize = 50
 _G.Disabled = false
 _G.HitboxColor = Color3.fromRGB(0, 255, 0)
 _G.HitboxTransparency = 0.7
 _G.AliveCheck = false
 _G.TeamCheck = false
+_G.HitboxPart = "HumanoidRootPart"
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
-
--- Store original HumanoidRootPart properties for reset
 local originalProperties = {}
 
--- Apply hitbox to a player
-local function applyHitbox(player)
-    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
-    if player == LocalPlayer then return end
+local function resetPart(player, partName)
+    local key = player.UserId .. "_" .. partName
+    if partName == "Head" then
+        if originalProperties[key] then
+            originalProperties[key]:Destroy()
+            originalProperties[key] = nil
+        end
+    else
+        local part = player.Character and player.Character:FindFirstChild(partName)
+        if part and originalProperties[key] then
+            local orig = originalProperties[key]
+            part.Size = orig.Size
+            part.Transparency = orig.Transparency
+            part.BrickColor = orig.BrickColor
+            part.Material = orig.Material
+            part.CanCollide = orig.CanCollide
+            originalProperties[key] = nil
+        end
+    end
+end
 
-    -- Team check: skip teammates if enabled
+local function resetHitbox(player)
+    for _, partName in ipairs({"HumanoidRootPart", "Head"}) do
+        resetPart(player, partName)
+    end
+end
+
+local function createHeadHitbox(player)
+    local head = player.Character and player.Character:FindFirstChild("Head")
+    if not head then return end
+    local key = player.UserId .. "_Head"
+    if originalProperties[key] then return end
+
+    local hitbox = Instance.new("Part")
+    hitbox.Name = "HitboxOverlay"
+    hitbox.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
+    hitbox.Transparency = _G.HitboxTransparency
+    hitbox.BrickColor = BrickColor.new(_G.HitboxColor)
+    hitbox.Material = Enum.Material.Neon
+    hitbox.CanCollide = false
+    hitbox.Anchored = false
+    hitbox.CanQuery = false
+    hitbox.CanTouch = false
+    hitbox.Parent = player.Character
+
+    local weld = Instance.new("WeldConstraint")
+    weld.Part0 = head
+    weld.Part1 = hitbox
+    weld.Parent = hitbox
+
+    originalProperties[key] = hitbox
+end
+
+local function applyHitbox(player)
+    if not player.Character then return end
+    if player == LocalPlayer then return end
     if _G.TeamCheck and player.Team == LocalPlayer.Team then
         resetHitbox(player)
         return
     end
-
-    -- Alive check: skip dead players if enabled
     local humanoid = player.Character:FindFirstChild("Humanoid")
     if _G.AliveCheck and humanoid and humanoid.Health <= 0 then
         resetHitbox(player)
         return
     end
 
-    local hrp = player.Character.HumanoidRootPart
+    resetHitbox(player)
 
-    -- Save original values if not saved
-    if not originalProperties[player] then
-        originalProperties[player] = {
-            Size = hrp.Size,
-            Transparency = hrp.Transparency,
-            BrickColor = hrp.BrickColor,
-            Material = hrp.Material,
-            CanCollide = hrp.CanCollide
-        }
-    end
-
-    -- Apply hitbox
-    hrp.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
-    hrp.Transparency = _G.HitboxTransparency
-    hrp.BrickColor = BrickColor.new(_G.HitboxColor)
-    hrp.Material = Enum.Material.Neon
-    hrp.CanCollide = false
-end
-
--- Reset player’s HumanoidRootPart to original values
-function resetHitbox(player)
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and originalProperties[player] then
-        local hrp = player.Character.HumanoidRootPart
-        local orig = originalProperties[player]
-
-        hrp.Size = orig.Size
-        hrp.Transparency = orig.Transparency
-        hrp.BrickColor = orig.BrickColor
-        hrp.Material = orig.Material
-        hrp.CanCollide = orig.CanCollide
-
-        originalProperties[player] = nil
+    if _G.HitboxPart == "HumanoidRootPart" then
+        local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+        local key = player.UserId .. "_HumanoidRootPart"
+        if not originalProperties[key] then
+            originalProperties[key] = {
+                Size = hrp.Size,
+                Transparency = hrp.Transparency,
+                BrickColor = hrp.BrickColor,
+                Material = hrp.Material,
+                CanCollide = hrp.CanCollide
+            }
+        end
+        hrp.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
+        hrp.Transparency = _G.HitboxTransparency
+        hrp.BrickColor = BrickColor.new(_G.HitboxColor)
+        hrp.Material = Enum.Material.Neon
+        hrp.CanCollide = false
+    elseif _G.HitboxPart == "Head" then
+        createHeadHitbox(player)
     end
 end
 
--- Update all players every frame
 RunService.RenderStepped:Connect(function()
     for _, player in ipairs(Players:GetPlayers()) do
         if _G.Disabled then
@@ -367,7 +400,6 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- Handle new players joining and respawning
 local function setupPlayer(player)
     player.CharacterAdded:Connect(function()
         if _G.Disabled then
@@ -376,12 +408,10 @@ local function setupPlayer(player)
     end)
 end
 
--- Initialize all current players
 for _, player in ipairs(Players:GetPlayers()) do
     setupPlayer(player)
 end
 
--- Connect future players
 Players.PlayerAdded:Connect(setupPlayer)
 
 local Section = Tab:Section({
@@ -411,6 +441,9 @@ Multi.Settings:Slider({
     Flag = "HitboxSizeslider",
     Callback = function(value)
         _G.HeadSize = value
+        for _, player in ipairs(Players:GetPlayers()) do
+            if _G.Disabled then applyHitbox(player) end
+        end
     end
 })
 
@@ -422,6 +455,9 @@ Multi.Settings:Colorpicker({
     Locked = false,
     Callback = function(color)
         _G.HitboxColor = color
+        for _, player in ipairs(Players:GetPlayers()) do
+            if _G.Disabled then applyHitbox(player) end
+        end
     end
 })
 
@@ -433,6 +469,9 @@ Multi.Settings:Slider({
     Flag = "TransparencySlider",
     Callback = function(value)
         _G.HitboxTransparency = value
+        for _, player in ipairs(Players:GetPlayers()) do
+            if _G.Disabled then applyHitbox(player) end
+        end
     end
 })
 
@@ -451,6 +490,19 @@ Multi.Checks:Toggle({
     Flag = "TeamCheckToggle",
     Callback = function(state)
         _G.TeamCheck = state
+    end
+})
+
+Multi.Settings:Dropdown({
+    Title = "Hitbox Part",
+    Values = {"Head", "HumanoidRootPart"},
+    Multi = false,
+    Value = "HumanoidRootPart",
+    Callback = function(selected)
+        _G.HitboxPart = selected
+        for _, player in ipairs(Players:GetPlayers()) do
+            if _G.Disabled then applyHitbox(player) else resetHitbox(player) end
+        end
     end
 })
 
