@@ -1,5 +1,17 @@
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/orialdev/WindUI-Forked-by-orialdev/refs/heads/main/WindUI%20Forked"))()
 
+WindUI:AddTheme({
+    Name = "Neon Glow",
+
+    Accent = Color3.fromHex("#00FFF7"),      -- Neon Cyan
+    Background = Color3.fromHex("#0A0A0F"),  -- Very dark background
+    Outline = Color3.fromHex("#00FF85"),     -- Neon Green outline
+    Text = Color3.fromHex("#FFFFFF"),        -- Pure white text
+    Placeholder = Color3.fromHex("#8AFFE1"), -- Soft neon cyan
+    Button = Color3.fromHex("#1F2933"),      -- Dark button with contrast
+    Icon = Color3.fromHex("#FF00FF"),        -- Neon Magenta icons
+})
+
 local Window = WindUI:CreateWindow({
     Title = "Noxia",
     Icon = "zap",
@@ -9,7 +21,7 @@ local Window = WindUI:CreateWindow({
     MinSize = Vector2.new(560, 350),
     MaxSize = Vector2.new(850, 560),
     Transparent = true,
-    Theme = "Dark",
+    Theme = "Neon Glow",
     Resizable = true,
     SideBarWidth = 200,
     BackgroundImageTransparency = 0.42,
@@ -22,8 +34,8 @@ local Window = WindUI:CreateWindow({
     User = {
         Enabled = true,
         Anonymous = true,
-        Callback = function()
-            print("clicked")
+        Callback = function(v)
+            WindUI:SetTheme("v")
         end,
     },
     KeySystem = {
@@ -38,6 +50,8 @@ local Window = WindUI:CreateWindow({
     }
 }
 })
+
+Window:SetBackgroundImage("rbxassetid://121787533858651")
 
 Window:EditOpenButton({
     Title = "Noxia",
@@ -928,8 +942,13 @@ local function toggleFly()
     humanoid.PlatformStand = true
 end
 
+local Section = Tab:Section({
+    Title = "Fly",
+    Opened = true
+})
+
 --// UI TOGGLE
-Tab:Toggle({
+Section:Toggle({
     Title = "Fly",
     Value = false,
     Flag = "flytoggle",
@@ -939,7 +958,7 @@ Tab:Toggle({
 })
 
 --// SPEED SLIDER
-Tab:Slider({
+Section:Slider({
     Title = "Fly Speed",
     Value = { Min = 1, Max = 150, Default = 1 },
     Step = 1,
@@ -950,8 +969,117 @@ Tab:Slider({
     end
 })
 
+-- Services
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Vars
+local humanoid
+local defaultWalkSpeed = 16
+local defaultJumpPower = 50
+
+local currentWalkSpeed = 16
+local currentJumpPower = 50
+
+-- Get humanoid safely (handles respawn)
+local function getHumanoid()
+    local character = player.Character or player.CharacterAdded:Wait()
+    humanoid = character:WaitForChild("Humanoid")
+end
+
+getHumanoid()
+player.CharacterAdded:Connect(getHumanoid)
+
+local SectionS = Tab:Section({
+    Title = "Movement",
+    Opened = true
+})
+
+local Section = SectionS:Section({
+    Title = "Walkspeed",
+    Opened = true
+})
+
+-- Walkspeed Toggle
+Section:Toggle({
+    Title = "Walkspeed",
+    Value = false,
+    Flag = "walkspeedtoggle",
+    Callback = function(state)
+        if not humanoid then return end
+
+        if state then
+            humanoid.WalkSpeed = currentWalkSpeed
+        else
+            humanoid.WalkSpeed = defaultWalkSpeed
+        end
+    end
+})
+
+-- Walkspeed Slider
+Section:Slider({
+    Title = "Adjust Walkspeed",
+    Value = { Min = 16, Max = 150, Default = 16 },
+    Step = 1,
+    IsTooltip = true,
+    Flag = "WalkspeedSlider",
+    Callback = function(value)
+        currentWalkSpeed = value
+
+        if humanoid and _G.walkspeedtoggle then
+            humanoid.WalkSpeed = value
+        end
+    end
+})
+
+local Section = SectionS:Section({
+    Title = "JumpPower",
+    Opened = true
+})
+
+-- Jumppower Toggle
+Section:Toggle({
+    Title = "Jumppower",
+    Value = false,
+    Flag = "jumppowertoggle",
+    Callback = function(state)
+        if not humanoid then return end
+
+        if state then
+            humanoid.JumpPower = currentJumpPower
+        else
+            humanoid.JumpPower = defaultJumpPower
+        end
+    end
+})
+
+-- Jumppower Slider
+Section:Slider({
+    Title = "Adjust Jumppower",
+    Value = { Min = 50, Max = 150, Default = 50 },
+    Step = 1,
+    IsTooltip = true,
+    Flag = "adjustjumppowerslider",
+    Callback = function(value)
+        currentJumpPower = value
+
+        if humanoid and _G.jumppowertoggle then
+            humanoid.JumpPower = value
+        end
+    end
+})
+
 local Tab = Window:Tab({
     Title = "Settings",
-    Icon = "house",
+    Icon = "cog",
     Visible = true
+})
+
+Tab:Toggle({
+    Title = "transparent",
+    Value = true,
+    Flag = "transparencytoggle",
+    Callback = function(state)
+        Window:ToggleTransparency(state)
+    end
 })
