@@ -32,8 +32,8 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default", -- Default or Mac
     },
     User = {
-        Enabled = true,
-        Anonymous = true,
+        Enabled = false,
+        Anonymous = false,
         Callback = function(v)
             WindUI:SetTheme("v")
         end,
@@ -277,6 +277,8 @@ Multi.Checks:Toggle({
         wallCheck = state
     end
 })
+
+Tab:Select()
 
 local Tab = Window:Tab({
     Title = "Hitboxes",
