@@ -15,7 +15,7 @@ local function tp(ins, pos, time, thing)
     game:GetService("TweenService"):Create(ins, TweenInfo.new(time, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut),{Position = pos}):Play()
 end
 
-function lib:init(ti, dosplash, visiblekey, deleteprevious)
+function lib:init(ti, dosplash, visiblekey, deleteprevious, customsize)
     if syn then
         
          cg = game:GetService("CoreGui")
@@ -114,7 +114,7 @@ scrgui.ResetOnSpawn = false
     main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     main.BackgroundTransparency = 0.150
     main.Position = UDim2.new(0.5, 0, 2, 0)
-    main.Size = isMobile and UDim2.new(0.95, 0, 0, 500) or UDim2.new(0, 721, 0, 584)
+    main.Size = customsize or (isMobile and UDim2.new(0.95, 0, 0, 500) or UDim2.new(0, 721, 0, 584))
 
     local uc = Instance.new("UICorner")
     uc.CornerRadius = UDim.new(0, 18)
@@ -164,7 +164,8 @@ scrgui.ResetOnSpawn = false
     workarea.Parent = main
     workarea.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     workarea.Position = UDim2.new(0.36403501, 0, 0, 0)
-    workarea.Size = UDim2.new(0, 458, 0, 584)
+    local mainSize = customsize or (isMobile and UDim2.new(0.95, 0, 0, 500) or UDim2.new(0, 721, 0, 584))
+    workarea.Size = UDim2.new(0, mainSize.X.Offset * 0.635, 0, mainSize.Y.Offset)
 
     local uc_2 = Instance.new("UICorner")
     uc_2.CornerRadius = UDim.new(0, 18)
@@ -409,7 +410,7 @@ scrgui.ResetOnSpawn = false
     notifdarkness.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     notifdarkness.BackgroundTransparency = 0.600
     notifdarkness.Position = UDim2.new(0.5, 0, 0.5, 0)
-    notifdarkness.Size = UDim2.new(0, 721, 0, 584)
+    notifdarkness.Size = mainSize
     notifdarkness.ZIndex = 2
 
     local uc_13 = Instance.new("UICorner")
@@ -534,7 +535,7 @@ scrgui.ResetOnSpawn = false
     notif2darkness.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     notif2darkness.BackgroundTransparency = 0.600
     notif2darkness.Position = UDim2.new(0.5, 0, 0.5, 0)
-    notif2darkness.Size = UDim2.new(0, 721, 0, 584)
+    notif2darkness.Size = mainSize
     notif2darkness.ZIndex = 2
 
 
