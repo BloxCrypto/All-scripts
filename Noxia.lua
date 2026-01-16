@@ -63,7 +63,7 @@ Window:Tag({
 local Dialog = Window:Dialog({
     Icon = "rss",
     Title = "Updates | 1.2\n[+] Add | [-] Fixed/improvement | [x] Removed",
-    Content = "What's new?\n[+] Added desync\n[-]Fixed bugs",
+    Content = "What's new?\n[+] Added desync\n[-]Fixed bugs\n[+]Roblox Interface tab\n[+]Added Configs",
     Buttons = {
         {
             Title = "OK",
@@ -72,7 +72,7 @@ local Dialog = Window:Dialog({
     Title = "Executor", -- lucide.dev icon
     Content = "Your Executor:" .. identifyexecutor(), -- Add executor identification
     Duration = 3, -- 3 seconds
-    Icon = "bird",
+    Icon = "video",
 })
             end,
         },
