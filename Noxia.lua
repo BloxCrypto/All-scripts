@@ -13,7 +13,7 @@ WindUI:AddTheme({
 })
 
 local Window = WindUI:CreateWindow({
-    Title = "Noxia",
+    Title = "Noxia | Universal",
     Icon = "zap",
     Author = "by Leviform",
     Folder = "Noxia",
@@ -32,14 +32,14 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Default", -- Default or Mac
     },
     User = {
-        Enabled = false,
+        Enabled = true,
         Anonymous = false,
         Callback = function(v)
-            WindUI:SetTheme("v")
+            WindUI:SetTheme(v)
         end,
     },
     KeySystem = {
-    Title = "Noxia Alpha",
+    Title = "Noxia",
     SaveKey = true, -- Saves to WindUI/FolderName/Key.key
     API = {
         {
@@ -52,6 +52,38 @@ local Window = WindUI:CreateWindow({
 })
 
 Window:SetBackgroundImage("rbxassetid://121787533858651")
+
+Window:Tag({
+    Title = "v1.2",
+    Icon = "git-pull-request",
+    Color = Color3.fromHex("#5D00C3"),
+    Radius = 0, -- from 0 to 13
+})
+
+local Dialog = Window:Dialog({
+    Icon = "rss",
+    Title = "Updates | 1.2\n[+] Add | [-] Fixed/improvement | [x] Removed",
+    Content = "What's new?\n[+] Added desync\n[-]Fixed bugs",
+    Buttons = {
+        {
+            Title = "OK",
+            Callback = function()
+                WindUI:Notify({
+    Title = "Executor", -- lucide.dev icon
+    Content = "Your Executor:" .. identifyexecutor(), -- Add executor identification
+    Duration = 3, -- 3 seconds
+    Icon = "bird",
+})
+            end,
+        },
+        {
+            Title = "Exit",
+            Callback = function()
+                Window:Destroy()
+            end,
+        },
+    },
+})
 
 Window:EditOpenButton({
     Title = "Noxia",
@@ -179,7 +211,7 @@ end)
 
 local Section = Tab:Section({
     Title = "Aimbot",
-    Opened = true
+    Opened = false
 })
 
 Section:Toggle({
@@ -416,7 +448,7 @@ Players.PlayerAdded:Connect(setupPlayer)
 
 local Section = Tab:Section({
     Title = "Hitboxes",
-    Opened = true
+    Opened = false
 })
 
 Section:Toggle({
@@ -856,7 +888,7 @@ local Tab = Window:Tab({
 
 local Section = Tab:Section({
     Title = "Teleport to player",
-    Opened = true
+    Opened = false
 })
 
 local Players = game:GetService("Players")
@@ -997,8 +1029,8 @@ local function toggleFly()
 end
 
 local Section = Tab:Section({
-    Title = "Fly",
-    Opened = true
+    Title = "Fly (WI.I.P)",
+    Opened = false
 })
 
 --// UI TOGGLE
@@ -1046,12 +1078,12 @@ player.CharacterAdded:Connect(getHumanoid)
 
 local SectionS = Tab:Section({
     Title = "Movement",
-    Opened = true
+    Opened = false
 })
 
 local Section = SectionS:Section({
     Title = "Walkspeed",
-    Opened = true
+    Opened = false
 })
 
 -- Walkspeed Toggle
@@ -1088,7 +1120,7 @@ Section:Slider({
 
 local Section = SectionS:Section({
     Title = "JumpPower",
-    Opened = true
+    Opened = false
 })
 
 -- Jumppower Toggle
@@ -1123,17 +1155,525 @@ Section:Slider({
     end
 })
 
+
+local Section = Tab:Section({
+    Title = "Desync",
+    Opened = false
+})
+
+Section:Button({
+    Title = "Dresync (keyless)",
+    Desc = "Thanks to Drevanyx in rscripts.net",
+    Icon = "unplug",
+    Callback = function()
+        xpcall(function()
+	if getgenv().__67wait_what_albert_einstein_and_epstein__ then return end
+	getgenv().__67wait_what_albert_einstein_and_epstein__=true
+
+	cr=cloneref or function(...) return ... end
+	cf=clonefunction or function(...) return ... end
+
+	svc=setmetatable({},{__index=function(s,n)
+		s[n]=cr(game:GetService(n))
+		return s[n]
+	end})
+
+	lp=cr(svc.Players.LocalPlayer)
+	sg=cr(svc.StarterGui)
+	sc=cf(sg.SetCore)
+
+	if not setfflag then
+		xpcall(function()
+			sc(sg,"SendNotification",{Title="Not Supported",Text=identifyexecutor().." doesnt support fflags",Duration=5})
+		end,function()end)
+		getgenv().__67wait_what_albert_einstein_and_epstein__=nil
+		return
+	end
+
+	gh=gethui or get_hidden_gui or function() return game:GetService("CoreGui") end
+
+	special={"!","@","#","$","%","^","&","*","_","-","+","=","~","|","`","[","]","{","}","<",">","?","/","\\"}
+
+	mode,stop,choose,choosetype=nil,false,false,false
+	bind,bname,last,savedpos,charconn,created=nil,"",nil,nil,nil,{}
+	for i=1,math.random(20,35) do
+		bname=bname..special[math.random(1,#special)]
+	end
+
+	bindiezz=function()
+		if not bind or not bind:IsA("BindableFunction") then
+			if bind then bind:Destroy() end
+			bind=Instance.new("BindableFunction")
+			bind.Name=bname
+			bind.Parent=gh()
+		end
+		bind.OnInvoke=function(c)
+			if c=="No Respawn/Fast Respawn"then
+				choose=true
+			elseif c=="No Respawn"then
+				mode="norespawn"
+			elseif c=="Fast Respawn"then
+				mode="fastrespawn"
+			elseif c=="Normal"then
+				choosetype=true
+				if mode=="norespawn"then
+					mode="nonormal"
+				else
+					mode="fastnormal"
+				end
+			elseif c=="Void"then
+				choosetype=true
+				if mode=="norespawn"then
+					mode="novoid"
+				else
+					mode="fastvoid"
+				end
+			elseif c=="Close"then
+				stop=true
+			elseif c=="Stop & Go Back"then
+				stop=true
+			end
+		end
+		return bind
+	end
+
+	respawnburp=function(plr)
+		char=plr.Character
+		if not char then return end
+		hrp=char:FindFirstChild("HumanoidRootPart")
+		if not hrp then return end
+
+		ogpos=hrp.CFrame
+		ogpos2=workspace.CurrentCamera.CFrame
+		faggot=gethiddenproperty(workspace,"RejectCharacterDeletions")~=Enum.RejectCharacterDeletions.Disabled
+
+		if faggot and replicatesignal then
+			replicatesignal(plr.ConnectDiedSignalBackend)
+			task.wait(svc.Players.RespawnTime-.1)
+			replicatesignal(plr.Kill)
+		else
+			hum=char:FindFirstChildWhichIsA("Humanoid")
+			if hum then hum:ChangeState(Enum.HumanoidStateType.Dead) end
+			char:ClearAllChildren()
+
+			newgen=Instance.new("Model")
+			newgen.Parent=workspace
+			plr.Character=newgen
+			task.wait()
+			plr.Character=plr.Character
+			newgen:Destroy()
+		end
+
+		task.spawn(function()
+			plr.CharacterAdded:Wait():WaitForChild("HumanoidRootPart").CFrame=ogpos
+			workspace.CurrentCamera.CFrame=ogpos2
+		end)
+	end
+
+	makeball=function(voidmode)
+		orb_name=""
+		for i=1,math.random(20,35) do
+			orb_name=orb_name..special[math.random(1,#special)]
+		end
+		ws=svc.Workspace
+		if ws:FindFirstChild(orb_name) then
+			ws[orb_name]:Destroy()
+		end
+		char=lp.Character
+		if not char then return end
+		hrp=char:FindFirstChild("HumanoidRootPart")
+		if not hrp then return end
+
+		orb=Instance.new("Part")
+		orb.Name=orb_name
+		orb.Shape=Enum.PartType.Ball
+		orb.Size=Vector3.new(2,2,2)
+		orb.Material=Enum.Material.Neon
+		orb.Color=Color3.fromRGB(0,100,255)
+		orb.Transparency=.5
+		orb.Anchored=true
+		orb.CanCollide=false
+		orb.CFrame=voidmode and CFrame.new(0,2147483647,0) or hrp.CFrame*CFrame.new(0,2,0)
+		orb.Parent=ws
+
+		light=Instance.new("PointLight")
+		light.Color=Color3.fromRGB(0,100,255)
+		light.Brightness=2
+		light.Range=15
+		light.Parent=orb
+
+		billboard=Instance.new("BillboardGui")
+		billboard.Size=UDim2.new(0,200,0,50)
+		billboard.StudsOffset=Vector3.new(0,2,0)
+		billboard.AlwaysOnTop=true
+		billboard.Parent=orb
+
+		text=Instance.new("TextLabel")
+		text.Size=UDim2.new(1,0,1,0)
+		text.BackgroundTransparency=1
+		text.Text="Server Position"
+		text.TextColor3=Color3.fromRGB(0,100,255)
+		text.TextStrokeTransparency=.5
+		text.Font=Enum.Font.SourceSans
+		text.TextSize=24
+		text.Parent=billboard
+
+		task.spawn(function()
+			while orb and orb.Parent do
+				orb.Size=Vector3.new(2+math.sin(tick()*3)*.3,2+math.sin(tick()*3)*.3,2+math.sin(tick()*3)*.3)
+				task.wait()
+			end
+		end)
+
+		created[#created+1]=orb
+
+		return orb
+	end
+
+	gostart=function()
+		mode,choose,choosetype=nil,false,false
+		task.wait(.5)
+		bindiezz()
+		xpcall(function()
+			sc(sg,"SendNotification",{Title="Select Option",Text="If the desync doesnt work use Fast Respawn",Duration=999,Button1="No Respawn/Fast Respawn",Button2="Close",Callback=bind})
+		end,function()end)
+		while not choose and not stop do task.wait(.1) end
+		if stop then
+			getgenv().__67wait_what_albert_einstein_and_epstein__=nil
+			if bind then bind:Destroy() end
+			return
+		end
+		if choose then
+			task.wait(.5)
+			bindiezz()
+			xpcall(function()
+				sc(sg,"SendNotification",{Title="Select Mode",Text="No Respawn or Fast Respawn?",Duration=999,Button1="No Respawn",Button2="Fast Respawn",Callback=bind})
+			end,function()end)
+			while not mode and not stop do task.wait(.1) end
+			if stop then
+				getgenv().__67wait_what_albert_einstein_and_epstein__=nil
+				if bind then bind:Destroy() end
+				return
+			end
+		end
+
+		if mode then
+			task.wait(.5)
+			bindiezz()
+			xpcall(function()
+				sc(sg,"SendNotification",{Title="Select Type",Text="Normal or Void?",Duration=999,Button1="Normal",Button2="Void",Callback=bind})
+			end,function()end)
+			while not choosetype and not stop do task.wait(.1) end
+			if stop then
+				getgenv().__67wait_what_albert_einstein_and_epstein__=nil
+				if bind then bind:Destroy() end
+				return
+			end
+		end
+
+		if mode=="nonormal"then
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then hrp.Anchored=true end
+			end
+			setfflag("NextGenReplicatorEnabledWrite4","true")
+			task.wait(1)
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then hrp.Anchored=false end
+			end
+			last=makeball(false)
+			bindiezz()
+			xpcall(function()
+				sc(sg,"SendNotification",{Title="No Respawn Normal Active",Text="Desync enabled",Duration=999,Button1="Stop & Go Back",Callback=bind})
+			end,function()end)
+			while not stop do task.wait(.1) end
+			if stop then
+				setfflag("NextGenReplicatorEnabledWrite4","false")
+				if last then last:Destroy() end
+				for i,v in created do
+					if v and v.Parent then v:Destroy() end
+				end
+				created={}
+				stop=false
+				gostart()
+				return
+			end
+		elseif mode=="novoid"then
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then 
+					savedpos=hrp.CFrame
+					hrp.CFrame=CFrame.new(0,2147483647,0)
+				end
+			end
+			charconn=lp.CharacterAdded:Connect(function(newchar)
+				task.spawn(function()
+					setfflag("NextGenReplicatorEnabledWrite4","false")
+					task.wait(1.367)
+					newhrp=newchar:WaitForChild("HumanoidRootPart",5)
+					if newhrp then
+						newhrp.CFrame=CFrame.new(0,2147483647,0)
+						task.wait(.4)
+						setfflag("NextGenReplicatorEnabledWrite4","true")
+						task.wait(2)
+						if savedpos then
+							newhrp.CFrame=savedpos
+						end
+					end
+					if not last or not last.Parent then 
+						last=makeball(true) 
+					end
+				end)
+			end)
+			task.wait(.4)
+			setfflag("NextGenReplicatorEnabledWrite4","true")
+			task.wait(2)
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp and savedpos then
+					hrp.CFrame=savedpos
+				end
+			end
+			last=makeball(true)
+			bindiezz()
+			xpcall(function()
+				sc(sg,"SendNotification",{Title="No Respawn Void Active",Text="Desync enabled",Duration=999,Button1="Stop & Go Back",Callback=bind})
+			end,function()end)
+			while not stop do 
+				task.wait(.1)
+				char=lp.Character
+				if char then
+					hrp=char:FindFirstChild("HumanoidRootPart")
+					if hrp and hrp.CFrame.Y<2147483640 then
+						savedpos=hrp.CFrame
+					end
+				end
+			end
+			if stop then
+				setfflag("NextGenReplicatorEnabledWrite4","false")
+				if last then last:Destroy() end
+				for i,v in created do
+					if v and v.Parent then v:Destroy() end
+				end
+				created={}
+				if charconn then charconn:Disconnect() end
+				savedpos=nil
+				stop=false
+				gostart()
+				return
+			end
+		elseif mode=="fastnormal"then
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then 
+					savedpos=hrp.CFrame
+					hrp.Anchored=true 
+				end
+			end
+			charconn=lp.CharacterAdded:Connect(function(newchar)
+				task.spawn(function()
+					task.wait(2)
+					newhrp=newchar:WaitForChild("HumanoidRootPart",5)
+					if newhrp and savedpos then 
+						newhrp.CFrame=savedpos 
+					end
+					if not last or not last.Parent then 
+						last=makeball(false) 
+					end
+				end)
+			end)
+			respawnburp(lp)
+			setfflag("NextGenReplicatorEnabledWrite4","true")
+			task.wait(2)
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then
+					hrp.Anchored=false
+					if savedpos then
+						hrp.CFrame=savedpos
+					end
+				end
+			end
+			last=makeball(false)
+			bindiezz()
+			xpcall(function()
+				sc(sg,"SendNotification",{Title="Fast Respawn Normal Active",Text="Desync enabled",Duration=999,Button1="Stop & Go Back",Callback=bind})
+			end,function()end)
+			while not stop do task.wait(.1) end
+			if stop then
+				setfflag("NextGenReplicatorEnabledWrite4","false")
+				if last then last:Destroy() end
+				for i,v in created do
+					if v and v.Parent then v:Destroy() end
+				end
+				created={}
+				if charconn then charconn:Disconnect() end
+				savedpos=nil
+				stop=false
+				gostart()
+				return
+			end
+		elseif mode=="fastvoid"then
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then 
+					savedpos=hrp.CFrame
+				end
+			end
+			charconn=lp.CharacterAdded:Connect(function(newchar)
+				task.spawn(function()
+					setfflag("NextGenReplicatorEnabledWrite4","false")
+					task.wait(1.367)
+					newhrp=newchar:FindFirstChild("HumanoidRootPart")
+					if newhrp then
+						newhrp.CFrame=CFrame.new(0,2147483647,0)
+						task.wait(2)
+						setfflag("NextGenReplicatorEnabledWrite4","true")
+						task.wait(2)
+						if savedpos then
+							newhrp.CFrame=savedpos
+						end
+					end
+					if not last or not last.Parent then 
+						last=makeball(true) 
+					end
+				end)
+			end)
+			respawnburp(lp)
+			task.wait(.5)
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp then
+					hrp.CFrame=CFrame.new(0,2147483647,0)
+				end
+			end
+			task.wait(.4)
+			setfflag("NextGenReplicatorEnabledWrite4","true")
+			task.wait(2)
+			char=lp.Character
+			if char then
+				hrp=char:FindFirstChild("HumanoidRootPart")
+				if hrp and savedpos then
+					hrp.CFrame=savedpos
+				end
+			end
+			last=makeball(true)
+			bindiezz()
+			xpcall(function()
+				sc(sg,"SendNotification",{Title="Fast Respawn Void Active",Text="Desync enabled",Duration=999,Button1="Stop & Go Back",Callback=bind})
+			end,function()end)
+			while not stop do 
+				task.wait(.1)
+				char=lp.Character
+				if char then
+					hrp=char:FindFirstChild("HumanoidRootPart")
+					if hrp and hrp.CFrame.Y<2147483640 then
+						savedpos=hrp.CFrame
+					end
+				end
+			end
+			if stop then
+				setfflag("NextGenReplicatorEnabledWrite4","false")
+				if last then last:Destroy() end
+				for i,v in created do
+					if v and v.Parent then v:Destroy() end
+				end
+				created={}
+				if charconn then charconn:Disconnect() end
+				savedpos=nil
+				stop=false
+				gostart()
+				return
+			end
+		end
+	end
+
+	gostart()
+	getgenv().__67wait_what_albert_einstein_and_epstein__=nil
+	if bind then bind:Destroy() end
+
+end,function(err)
+	getgenv().__67wait_what_albert_einstein_and_epstein__=nil
+	bind_check=gh():FindFirstChild(bname)
+	if bind_check then bind_check:Destroy() end
+end)
+    end
+})
+
+Section:Button({
+    Title = "Desync better (not keyless)",
+    Desc = "Desync made by beliausangatkece in discord",
+    Icon = "unplug",
+    Callback = function()
+        loadstring(game:HttpGet("https://r4-sec.vercel.app/files/067c44758b64369a9a9259066e9c968f"))()
+    end
+})
+
+local Tab = Window:Tab({
+    Title = "Roblox Interface",
+    Icon = "airplay",
+    Visible = true
+})
+
+Tab:Button({
+    Title = "Console",
+    Desc = "Open Console",
+    Icon = "code-xml",
+    Callback = function()
+        game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
+    end
+})
+
 local Tab = Window:Tab({
     Title = "Settings",
     Icon = "cog",
     Visible = true
 })
 
-Tab:Toggle({
-    Title = "transparent",
+local Section = Tab:Section({
+    Title = "UI Settings",
+    Opened = false
+})
+
+Section:Toggle({
+    Title = "Transparency",
     Value = true,
     Flag = "transparencytoggle",
     Callback = function(state)
         Window:ToggleTransparency(state)
+    end
+})
+
+local ConfigManager = Window.ConfigManager
+
+local Section = Tab:Section({
+    Title = "Configs",
+    Opened = false
+})
+
+Section:Button({
+    Title = "Save Config",
+    Desc = "Save Your Config",
+    Icon = "cloud-sync",
+    Callback = function()
+        ConfigManager:Config("Noxia"):Save()
+    end
+})
+
+Section:Button({
+    Title = "Load Config",
+    Desc = "Load Your Config",
+    Icon = "cloud-sync",
+    Callback = function()
+        ConfigManager:Config("Noxia"):Load()
     end
 })
